@@ -10,7 +10,7 @@
 
 -   Free software: MIT License
 -   Documentation: https://gthlor.github.io/prismatools
-    
+
 
 ## Features
 
