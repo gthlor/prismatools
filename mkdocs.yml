@@ -80,7 +80,7 @@ nav:
     - Changelog: changelog.md
     - Report Issues: https://github.com/gthlor/prismatools/issues
     - Examples:
-        - examples/intro.ipynb
+        - examples/01_reading_and_exporting_PRISMA_cube.ipynb
     - API Reference:
           - prismatools module: prismatools.md
           - common module: common.md
