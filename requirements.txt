@@ -1,1 +1,5 @@
+affine
+h5py
 numpy
+rioxarray
+xarray
