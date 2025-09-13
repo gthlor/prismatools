@@ -62,6 +62,12 @@ def read_prismaL2D(
 
     Args:
         file_path (str): Path to the PRISMA L2D .he5 file.
+        wavelengths (Optional[List[float]]): List of wavelengths (in nm) to extract.
+            - If None, all valid wavelengths are used.
+            - If provided, can select by exact match or nearest available wavelength.
+        method (str, default "nearest"): Method to select wavelengths when `wavelengths` is provided. Options are:
+            - "nearest": selects the closest available wavelength.
+            - "exact": selects only wavelengths exactly matching those requested.
 
     Returns:
         xr.Dataset: An xarray.Dataset containing reflectance data with coordinates.
