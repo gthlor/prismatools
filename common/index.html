@@ -947,11 +947,7 @@
 
     <span class="c1"># get driver from extension</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">output</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="n">driver_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="s2">&quot;COG&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;.tif&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;.tiff&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span>
-    <span class="p">}</span>
+    <span class="n">driver_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="s2">&quot;COG&quot;</span><span class="p">,</span> <span class="s2">&quot;.tif&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span> <span class="s2">&quot;.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;ENVI&quot;</span><span class="p">}</span>
     <span class="n">driver</span> <span class="o">=</span> <span class="n">driver_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;COG&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;.tif&quot;</span>
