@@ -1,12 +1,17 @@
 """The common module contains common functions and classes used by the other modules."""
 
+# TODO: split the module into IO (read_prismaL2D, read_prismaL2D_pan, write_prismaL2D) and utils (check_valid_file, get_transform, array_to_image)
+# TODO: perhaps i could merge the two read_prisma* functions. -> dataset = read_prismaL2D(dataset, pan=pan) line: 177
+# TODO: I might add how to write the cube in in envi format
+
 import os
 import numpy as np
+import rasterio
 import xarray as xr
 import rioxarray as rio
 import h5py
 
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union, Optional, Any
 from affine import Affine
 
 
@@ -51,6 +56,156 @@ def get_transform(ul_easting: float, ul_northing: float, res: int = 30) -> Affin
         Affine: Affine transformation object representing the spatial transform.
     """
     return Affine.translation(ul_easting, ul_northing) * Affine.scale(res, -res)
+
+
+def array_to_image(
+    array: np.ndarray,
+    output: str,
+    dtype: Optional[np.dtype] = None,
+    compress: str = "lzw",
+    transpose: bool = True,
+    crs: Optional[str] = None,
+    transform: Optional[tuple] = None,
+    driver: str = "GTiff",
+    **kwargs,
+) -> str:
+    """
+    Save a NumPy array as a georeferenced raster (GeoTIFF by default).
+
+    Args:
+        array (np.ndarray): Array to save. Shape can be (rows, cols) or (bands, rows, cols).
+        output (str): Path to the output file.
+        dtype (np.dtype, optional): Data type for output. Auto-inferred if None.
+        compress (str, optional): Compression for GTiff/COG. Defaults to "lzw".
+        transpose (bool, optional): If True, expects (bands, rows, cols) and transposes.
+        crs (str, optional): CRS of the output raster.
+        transform (tuple, optional): Affine transform of the raster.
+        driver (str, optional): GDAL driver. Defaults to "GTiff".
+        **kwargs: Extra options for rasterio.open().
+
+    Returns:
+        str: Path to the saved file.
+    """
+    # ensure correct shape
+    if array.ndim == 3 and transpose:
+        array = np.transpose(array, (1, 2, 0))
+
+    # ensure output directory exists
+    os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
+
+    # get driver from extension
+    ext = os.path.splitext(output)[-1].lower()
+    driver_map = {
+        "": "COG",
+        ".tif": "GTiff",
+        ".tiff": "GTiff",
+    }
+    driver = driver_map.get(ext, "COG")
+    if ext == "":
+        output += ".tif"
+
+    # infer dtype if not given
+    if dtype is None:
+        min_val, max_val = np.nanmin(array), np.nanmax(array)
+        if min_val >= 0 and max_val <= 1:
+            dtype = np.float32
+        elif min_val >= 0 and max_val <= 255:
+            dtype = np.uint8
+        elif min_val >= -128 and max_val <= 127:
+            dtype = np.int8
+        elif min_val >= 0 and max_val <= 65535:
+            dtype = np.uint16
+        elif min_val >= -32768 and max_val <= 32767:
+            dtype = np.int16
+        else:
+            dtype = np.float64
+    array = array.astype(dtype)
+
+    # set metadata
+    count = 1 if array.ndim == 2 else array.shape[2]
+    metadata = dict(
+        driver=driver,
+        height=array.shape[0],
+        width=array.shape[1],
+        count=count,
+        dtype=array.dtype,
+        crs=crs,
+        transform=transform,
+    )
+    if compress and driver in ["GTiff", "COG"]:
+        metadata["compress"] = compress
+    metadata.update(**kwargs)
+
+    # write raster
+    with rasterio.open(output, "w", **metadata) as dst:
+        if array.ndim == 2:  # panchromatic
+            dst.write(array, 1)
+            dst.set_band_description(
+                1, kwargs.get("band_description", "Panchromatic band")
+            )
+        else:  # hyperspectral
+            for i in range(array.shape[2]):
+                dst.write(array[:, :, i], i + 1)
+                if "wavelengths" in kwargs:
+                    wl = kwargs["wavelengths"][i]
+                    dst.set_band_description(i + 1, f"Band {i+1} ({wl:.1f} nm)")
+
+    return output
+
+
+def write_prismaL2D(
+    dataset: Union[xr.Dataset, str],
+    output: str,
+    panchromatic: bool = False,
+    wavelengths: Optional[np.ndarray] = None,
+    method: str = "nearest",
+    **kwargs: Any,
+) -> Optional[str]:
+    """
+    Converts a PRISMA hyperspectral dataset to a georeferenced image.
+
+    Args:
+        dataset (Union[xr.Dataset, str]): The PRISMA dataset or the path to the
+            dataset file (.he5).
+        output (str): File path to save the output raster.
+        panchromatic (bool, optional): If True, treat array as single-band pancromatic.
+        wavelengths (np.ndarray, optional): Wavelengths to select from the dataset.
+            If None, all wavelengths are included. Defaults to None.
+        method (str, optional): Method to use for wavelength selection (e.g. "nearest").
+        **kwargs (Any): Additional arguments passed to 'array_to_image()' and to 'rasterio.open()'.
+
+    Returns:
+        str: Output file path, or None if all values are NaN.
+    """
+    # load dataset if it's a path to .he5
+    if isinstance(dataset, str):
+        dataset = (
+            read_prismaL2D_pan(dataset) if panchromatic else read_prismaL2D(dataset)
+        )
+
+    # get np.array
+    array = dataset["reflectance"].values
+    if not np.any(np.isfinite(array)):
+        print("Warning: All reflectance values are NaN. Output image will be blank.")
+        return None
+
+    # get band names (wavelength) and, eventually, select specific bands
+    if array.ndim == 2:  # panchromatic
+        kwargs["band_description"] = "Panchromatic band"
+    else:  # cube
+        if wavelengths is not None:
+            dataset = dataset.sel(wavelength=wavelengths, method=method)
+            array = dataset["reflectance"].values
+        kwargs["wavelengths"] = dataset["wavelength"].values
+
+    return array_to_image(
+        array,
+        output=output,
+        transpose=False,
+        crs=dataset.rio.crs,
+        transform=dataset.rio.transform(),
+        **kwargs,
+    )
 
 
 def read_prismaL2D(
@@ -285,7 +440,7 @@ def read_prismaL2D_pan(file_path: str) -> xr.Dataset:
     return ds
 
 
-# debugging
+# # debugging
 # if __name__ == "__main__":
 #     file = r"C:/Users/loren/Desktop/PRS_L2D_STD_20240429095823_20240429095827_0001\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"
 #     ds = read_prismaL2D(file, wavelengths=None, method="nearest")
@@ -293,3 +448,13 @@ def read_prismaL2D_pan(file_path: str) -> xr.Dataset:
 
 #     ds_pan = read_prismaL2D_pan(file)
 #     print(ds_pan)
+
+#     # case1a: Pan from path (è necessario specificare se è pan o meno)
+#     write_prismaL2D(file, output=r'..\out_test\imgPan_path_pan.tif', panchromatic=True)
+#     # case1b: Cube from path
+#     write_prismaL2D(file, output=r'..\out_test\imgPan_path_cube.tif')
+
+#     # case2a: Pan from dataset
+#     write_prismaL2D(ds_pan, output=r'..\out_test\imgPan_ds.tif')
+#     # case2b: Cube from dataset
+#     write_prismaL2D(ds, output=r'..\out_test\imgCube_ds.tif')
