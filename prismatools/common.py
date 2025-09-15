@@ -2,7 +2,6 @@
 
 # TODO: split the module into IO (read_prismaL2D, read_prismaL2D_pan, write_prismaL2D) and utils (check_valid_file, get_transform, array_to_image)
 # TODO: perhaps i could merge the two read_prisma* functions. -> dataset = read_prismaL2D(dataset, pan=pan) line: 177
-# TODO: I might add how to write the cube in in envi format
 
 import os
 import numpy as np
@@ -95,11 +94,7 @@ def array_to_image(
 
     # get driver from extension
     ext = os.path.splitext(output)[-1].lower()
-    driver_map = {
-        "": "COG",
-        ".tif": "GTiff",
-        ".tiff": "GTiff",
-    }
+    driver_map = {"": "COG", ".tif": "GTiff", ".tiff": "GTiff", ".dat": "ENVI"}
     driver = driver_map.get(ext, "COG")
     if ext == "":
         output += ".tif"
@@ -440,21 +435,25 @@ def read_prismaL2D_pan(file_path: str) -> xr.Dataset:
     return ds
 
 
-# # debugging
+# debugging
 # if __name__ == "__main__":
-#     file = r"C:/Users/loren/Desktop/PRS_L2D_STD_20240429095823_20240429095827_0001\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"
-#     ds = read_prismaL2D(file, wavelengths=None, method="nearest")
-#     print(ds)
+# file = r"C:/Users/loren/Desktop/PRS_L2D_STD_20240429095823_20240429095827_0001\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"
+# ds = read_prismaL2D(file, wavelengths=None, method="nearest")
+# print(ds)
 
-#     ds_pan = read_prismaL2D_pan(file)
-#     print(ds_pan)
+# ds_pan = read_prismaL2D_pan(file)
+# print(ds_pan)
 
-#     # case1a: Pan from path (è necessario specificare se è pan o meno)
-#     write_prismaL2D(file, output=r'..\out_test\imgPan_path_pan.tif', panchromatic=True)
-#     # case1b: Cube from path
-#     write_prismaL2D(file, output=r'..\out_test\imgPan_path_cube.tif')
+# # case1a: Pan from path (è necessario specificare se è pan o meno)
+# write_prismaL2D(file, output=r'..\out_test\imgPan_path_pan.tif', panchromatic=True)
+# # case1b: Cube from path
+# write_prismaL2D(file, output=r'..\out_test\imgPan_path_cube.tif')
 
-#     # case2a: Pan from dataset
-#     write_prismaL2D(ds_pan, output=r'..\out_test\imgPan_ds.tif')
-#     # case2b: Cube from dataset
-#     write_prismaL2D(ds, output=r'..\out_test\imgCube_ds.tif')
+# # case2a: Pan from dataset
+# write_prismaL2D(ds_pan, output=r'..\out_test\imgPan_ds.tif')
+# # case2b: Cube from dataset
+# write_prismaL2D(ds, output=r'..\out_test\imgCube_ds.tif')
+
+# # case3 : Cube in ENVI format
+# write_prismaL2D(file, output=r'..\out_test\imgCube_ds.dat', panchromatic=False)
+# write_prismaL2D(file, output=r'..\out_test\imgPanc_ds.dat', panchromatic=True)
