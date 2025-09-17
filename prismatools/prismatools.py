@@ -6,7 +6,7 @@ import tempfile
 import ipyleaflet
 import leafmap
 
-from .common import read_prismaL2D, write_prismaL2D
+from .prisma import read_prismaL2D, write_prismaL2D
 from .gui import main_toolbar, spectralWidget
 
 
