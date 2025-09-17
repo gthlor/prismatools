@@ -15,7 +15,7 @@ from ipyleaflet import WidgetControl, LayersControl
 import bqplot
 from bqplot import pyplot as plt
 
-from .common import extract_spectral, extract_prisma
+from .prisma import extract_prisma
 
 
 def main_toolbar(m):
@@ -556,22 +556,7 @@ class spectralWidget(widgets.HBox):
 
                 ds = self._host_map.cog_layer_dict[layer_name]["xds"]
 
-                if self._host_map.cog_layer_dict[layer_name]["hyper"] == "XARRAY":
-                    da = extract_spectral(ds, lat, lon)
-                    xlabel = "Band"
-                    ylabel = "Value"
-
-                elif self._host_map.cog_layer_dict[layer_name]["hyper"] == "EMIT":
-                    da = ds.sel(latitude=lat, longitude=lon, method="nearest")[
-                        "reflectance"
-                    ]
-
-                    if "wavelength" not in self._host_map._spectral_data:
-                        self._host_map._spectral_data["wavelength"] = ds[
-                            "wavelength"
-                        ].values
-
-                elif self._host_map.cog_layer_dict[layer_name]["hyper"] == "PRISMA":
+                if self._host_map.cog_layer_dict[layer_name]["hyper"] == "PRISMA":
                     da = extract_prisma(ds, lat, lon)
 
                 self._host_map._spectral_data[f"({lat:.4f} {lon:.4f})"] = da.values

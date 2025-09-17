@@ -81,6 +81,10 @@ nav:
     - Report Issues: https://github.com/gthlor/prismatools/issues
     - Examples:
         - examples/01_reading_and_exporting_PRISMA_cube.ipynb
+        - examples/02_visualize_prisma.ipynb
     - API Reference:
           - prismatools module: prismatools.md
-          - common module: common.md
+          - gui module: gui.md
+          - utils module: utils.md
+          - prisma module: prisma.md
+          - spatial module: spatial.md

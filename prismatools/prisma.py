@@ -1,201 +1,16 @@
-"""The common module contains common functions and classes used by the other modules."""
+"""The prisma module provides functions to read and write PRISMA data products"""
 
-# TODO: split the module into IO (read_prismaL2D, read_prismaL2D_pan, write_prismaL2D) and utils (check_valid_file, get_transform, array_to_image)
+# TODO: currently supports PRISMA L2D; L2B/L2C support not implemented yet.
 
 import os
 import numpy as np
 import rasterio
 import xarray as xr
-import rioxarray as rio
+import rioxarray
 import h5py
-
 from typing import List, Tuple, Union, Optional, Any
-from affine import Affine
 
-
-def convert_coords(
-    coords: List[Tuple[float, float]], from_epsg: str, to_epsg: str
-) -> List[Tuple[float, float]]:
-    """
-    Convert a list of coordinates from one EPSG to another.
-
-    Args:
-        coords: List of tuples containing coordinates in the format (latitude, longitude).
-        from_epsg: Source EPSG code (default is "epsg:4326").
-        to_epsg: Target EPSG code (default is "epsg:32615").
-
-    Returns:
-        List of tuples containing converted coordinates in the format (x, y).
-    """
-    import pyproj
-
-    # Define the coordinate transformation
-    transformer = pyproj.Transformer.from_crs(from_epsg, to_epsg, always_xy=True)
-
-    # Convert each coordinate
-    converted_coords = [transformer.transform(lon, lat) for lat, lon in coords]
-
-    return converted_coords
-
-
-def extract_spectral(
-    ds: xr.Dataset, lat: float, lon: float, name: str = "data"
-) -> xr.DataArray:
-    """
-    Extracts spectral signature from a given xarray Dataset.
-
-    Args:
-        ds (xarray.Dataset): The dataset containing the spectral data.
-        lat (float): The latitude of the point to extract.
-        lon (float): The longitude of the point to extract.
-
-    Returns:
-        xarray.DataArray: The extracted data.
-    """
-
-    crs = ds.rio.crs
-
-    x, y = convert_coords([[lat, lon]], "epsg:4326", crs)[0]
-
-    values = ds.sel(x=x, y=y, method="nearest")[name].values
-
-    da = xr.DataArray(values, dims=["band"], coords={"band": ds.coords["band"]})
-
-    return da
-
-
-def check_valid_file(file_path: str, type: str = "PRS_L2D") -> bool:
-    """
-    Checks if the given file path points to a valid file.
-
-    Args:
-        file_path (str): Path to the file.
-        type (str, optional): Expected file type ('PRS_L2B', 'PRS_L2C', 'PRS_L2D'). Defaults to 'PRS_L2D'.
-
-    Returns:
-        bool: True if file_path points to the correct file, False otherwise.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        ValueError: If the type is unsupported.
-    """
-    if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"The file {file_path} does not exist.")
-
-    valid_types = {"PRS_L2B", "PRS_L2C", "PRS_L2D"}
-    if type not in valid_types:
-        raise ValueError(
-            f"Unsupported file type: {type}. Supported types are {valid_types}."
-        )
-
-    basename = os.path.basename(file_path)
-    return basename.startswith(type) and basename.endswith(".he5")
-
-
-def get_transform(ul_easting: float, ul_northing: float, res: int = 30) -> Affine:
-    """
-    Returns an affine transformation for a given upper-left corner and resolution.
-
-    Args:
-        ul_easting (float): Easting coordinate of the upper-left corner.
-        ul_northing (float): Northing coordinate of the upper-left corner.
-        res (int, optional): Pixel resolution. Defaults to 30.
-
-    Returns:
-        Affine: Affine transformation object representing the spatial transform.
-    """
-    return Affine.translation(ul_easting, ul_northing) * Affine.scale(res, -res)
-
-
-def array_to_image(
-    array: np.ndarray,
-    output: str,
-    dtype: Optional[np.dtype] = None,
-    compress: str = "lzw",
-    transpose: bool = True,
-    crs: Optional[str] = None,
-    transform: Optional[tuple] = None,
-    driver: str = "GTiff",
-    **kwargs,
-) -> str:
-    """
-    Save a NumPy array as a georeferenced raster (GeoTIFF by default).
-
-    Args:
-        array (np.ndarray): Array to save. Shape can be (rows, cols) or (bands, rows, cols).
-        output (str): Path to the output file.
-        dtype (np.dtype, optional): Data type for output. Auto-inferred if None.
-        compress (str, optional): Compression for GTiff/COG. Defaults to "lzw".
-        transpose (bool, optional): If True, expects (bands, rows, cols) and transposes.
-        crs (str, optional): CRS of the output raster.
-        transform (tuple, optional): Affine transform of the raster.
-        driver (str, optional): GDAL driver. Defaults to "GTiff".
-        **kwargs: Extra options for rasterio.open().
-
-    Returns:
-        str: Path to the saved file.
-    """
-    # ensure correct shape
-    if array.ndim == 3 and transpose:
-        array = np.transpose(array, (1, 2, 0))
-
-    # ensure output directory exists
-    os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
-
-    # get driver from extension
-    ext = os.path.splitext(output)[-1].lower()
-    driver_map = {"": "COG", ".tif": "GTiff", ".tiff": "GTiff", ".dat": "ENVI"}
-    driver = driver_map.get(ext, "COG")
-    if ext == "":
-        output += ".tif"
-
-    # infer dtype if not given
-    if dtype is None:
-        min_val, max_val = np.nanmin(array), np.nanmax(array)
-        if min_val >= 0 and max_val <= 1:
-            dtype = np.float32
-        elif min_val >= 0 and max_val <= 255:
-            dtype = np.uint8
-        elif min_val >= -128 and max_val <= 127:
-            dtype = np.int8
-        elif min_val >= 0 and max_val <= 65535:
-            dtype = np.uint16
-        elif min_val >= -32768 and max_val <= 32767:
-            dtype = np.int16
-        else:
-            dtype = np.float64
-    array = array.astype(dtype)
-
-    # set metadata
-    count = 1 if array.ndim == 2 else array.shape[2]
-    metadata = dict(
-        driver=driver,
-        height=array.shape[0],
-        width=array.shape[1],
-        count=count,
-        dtype=array.dtype,
-        crs=crs,
-        transform=transform,
-    )
-    if compress and driver in ["GTiff", "COG"]:
-        metadata["compress"] = compress
-    metadata.update(**kwargs)
-
-    # write raster
-    with rasterio.open(output, "w", **metadata) as dst:
-        if array.ndim == 2:  # panchromatic
-            dst.write(array, 1)
-            dst.set_band_description(
-                1, kwargs.get("band_description", "Panchromatic band")
-            )
-        else:  # hyperspectral
-            for i in range(array.shape[2]):
-                dst.write(array[:, :, i], i + 1)
-                if "wavelengths" in kwargs:
-                    wl = kwargs["wavelengths"][i]
-                    dst.set_band_description(i + 1, f"Band {i+1} ({wl:.1f} nm)")
-
-    return output
+from .utils import check_valid_file, convert_coords, get_transform
 
 
 def read_prismaL2D(
@@ -457,47 +272,117 @@ def extract_prisma(
         raise ValueError("Dataset CRS not set. Please provide dataset with CRS info.")
 
     crs = dataset.rio.crs.to_string()
-
-    # Convert lat/lon to projected coords
+    # convert lat/lon to projected coords
     x_proj, y_proj = convert_coords([(lat, lon)], "epsg:4326", crs)[0]
 
     da = dataset["reflectance"]
     x_con = (da["x"] > x_proj - offset) & (da["x"] < x_proj + offset)
     y_con = (da["y"] > y_proj - offset) & (da["y"] < y_proj + offset)
 
-    try:
-        data = da.where(x_con & y_con, drop=True)
+    data = da.where(x_con & y_con, drop=True)
+
+    if "wavelength" in da.dims:
         data = data.mean(dim=["x", "y"], skipna=True)
-    except ValueError:
-        # No matching pixels
-        data = np.full(da.sizes["wavelength"], np.nan)
+        return xr.DataArray(
+            data,
+            dims=["wavelength"],
+            coords={"wavelength": dataset.coords["wavelength"]},
+        )
+    else:
+        # panchromatic
+        data = data.mean(dim=["x", "y"], skipna=True)
+        return xr.DataArray(
+            [data.item()] if np.ndim(data) == 0 else data,
+            dims=["value"],
+        )
 
-    return xr.DataArray(
-        data,
-        dims=["wavelength"],
-        coords={"wavelength": dataset.coords["wavelength"]},
+
+def array_to_image(
+    array: np.ndarray,
+    output: str,
+    dtype: Optional[np.dtype] = None,
+    compress: str = "lzw",
+    transpose: bool = True,
+    crs: Optional[str] = None,
+    transform: Optional[tuple] = None,
+    driver: str = "GTiff",
+    **kwargs,
+) -> str:
+    """
+    Save a NumPy array as a georeferenced raster (GeoTIFF by default).
+
+    Args:
+        array (np.ndarray): Array to save. Shape can be (rows, cols) or (bands, rows, cols).
+        output (str): Path to the output file.
+        dtype (np.dtype, optional): Data type for output. Auto-inferred if None.
+        compress (str, optional): Compression for GTiff/COG. Defaults to "lzw".
+        transpose (bool, optional): If True, expects (bands, rows, cols) and transposes.
+        crs (str, optional): CRS of the output raster.
+        transform (tuple, optional): Affine transform of the raster.
+        driver (str, optional): GDAL driver. Defaults to "GTiff".
+        **kwargs: Extra options for rasterio.open().
+
+    Returns:
+        str: Path to the saved file.
+    """
+    # ensure correct shape
+    if array.ndim == 3 and transpose:
+        array = np.transpose(array, (1, 2, 0))
+
+    # ensure output directory exists
+    os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
+
+    # get driver from extension
+    ext = os.path.splitext(output)[-1].lower()
+    driver_map = {"": "COG", ".tif": "GTiff", ".tiff": "GTiff", ".dat": "ENVI"}
+    driver = driver_map.get(ext, "COG")
+    if ext == "":
+        output += ".tif"
+
+    # infer dtype if not given
+    if dtype is None:
+        min_val, max_val = np.nanmin(array), np.nanmax(array)
+        if min_val >= 0 and max_val <= 1:
+            dtype = np.float32
+        elif min_val >= 0 and max_val <= 255:
+            dtype = np.uint8
+        elif min_val >= -128 and max_val <= 127:
+            dtype = np.int8
+        elif min_val >= 0 and max_val <= 65535:
+            dtype = np.uint16
+        elif min_val >= -32768 and max_val <= 32767:
+            dtype = np.int16
+        else:
+            dtype = np.float64
+    array = array.astype(dtype)
+
+    # set metadata
+    count = 1 if array.ndim == 2 else array.shape[2]
+    metadata = dict(
+        driver=driver,
+        height=array.shape[0],
+        width=array.shape[1],
+        count=count,
+        dtype=array.dtype,
+        crs=crs,
+        transform=transform,
     )
+    if compress and driver in ["GTiff", "COG"]:
+        metadata["compress"] = compress
+    metadata.update(**kwargs)
 
+    # write raster
+    with rasterio.open(output, "w", **metadata) as dst:
+        if array.ndim == 2:  # panchromatic
+            dst.write(array, 1)
+            dst.set_band_description(
+                1, kwargs.get("band_description", "Panchromatic band")
+            )
+        else:  # hyperspectral
+            for i in range(array.shape[2]):
+                dst.write(array[:, :, i], i + 1)
+                if "wavelengths" in kwargs:
+                    wl = kwargs["wavelengths"][i]
+                    dst.set_band_description(i + 1, f"Band {i+1} ({wl:.1f} nm)")
 
-# debugging
-# if __name__ == "__main__":
-# file = r"C:/Users/loren/Desktop/PRS_L2D_STD_20240429095823_20240429095827_0001\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"
-# ds = read_prismaL2D(file, wavelengths=None, method="nearest")
-# print(ds)
-
-# ds_pan = read_prismaL2D(file, panchromatic=True)
-# print(ds_pan)
-
-# # case1a: Pan from path (è necessario specificare se è pan o meno)
-# write_prismaL2D(file, output=r'..\out_test\imgPan_path_pan.tif', panchromatic=True)
-# # case1b: Cube from path
-# write_prismaL2D(file, output=r'..\out_test\imgPan_path_cube.tif')
-
-# case2a: Pan from dataset
-# write_prismaL2D(ds_pan, output=r'..\out_test\imgPan_ds.tif')
-# case2b: Cube from dataset
-# write_prismaL2D(ds, output=r'..\out_test\imgCube_ds.tif')
-
-# # case3 : Cube in ENVI format
-# write_prismaL2D(file, output=r'..\out_test\imgCube_ds.dat', panchromatic=False)
-# write_prismaL2D(file, output=r'..\out_test\imgPanc_ds.dat', panchromatic=True)
+    return output

@@ -1,0 +1,4 @@
+
+# spatial module
+
+::: prismatools.spatial
