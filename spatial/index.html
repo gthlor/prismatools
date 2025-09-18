@@ -702,6 +702,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prismatools.spatial.band_math" class="md-nav__link">
+    <span class="md-ellipsis">
+      band_math()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prismatools.spatial.pca_image" class="md-nav__link">
+    <span class="md-ellipsis">
+      pca_image()
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -753,6 +771,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prismatools.spatial.band_math" class="md-nav__link">
+    <span class="md-ellipsis">
+      band_math()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prismatools.spatial.pca_image" class="md-nav__link">
+    <span class="md-ellipsis">
+      pca_image()
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -783,7 +819,400 @@
 <a id="prismatools.spatial"></a>
     <div class="doc doc-contents first">
 
+      <p>The spatial module provides functions to perform spatial analysis on PRISMA data products</p>
 
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="prismatools.spatial.band_math" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">band_math</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">wavelength_dict</span><span class="p">,</span> <span class="n">constants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#prismatools.spatial.band_math" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Compute one or more spectral indices from a hyperspectral dataset using
+user-defined expressions.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>dataset</code></td>
+        <td><code>xarray.Dataset</code></td>
+        <td><p>Dataset containing the spectral variable
+(e.g., 'reflectance') with dimension 'wavelength'.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>expressions</code></td>
+        <td><code>dict</code></td>
+        <td><p>Dictionary mapping variable names to expressions,
+e.g. {'NDVI': '(nir - red) / (nir + red)', 'GNDVI': '(nir - green)/(nir + green)'}.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>wavelength_dict</code></td>
+        <td><code>dict</code></td>
+        <td><p>Dictionary mapping band names to wavelengths,
+e.g. {'red': 660, 'green': 560, 'nir': 840}.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>constants</code></td>
+        <td><code>dict</code></td>
+        <td><p>Dictionary of constants to include in
+all expressions, e.g. {'c': 0.01}. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>inplace</code></td>
+        <td><code>bool</code></td>
+        <td><ul>
+<li>If True, add the computed indices to the input dataset.</li>
+<li>If False, return a new dataset containing only the indices.
+Defaults to False.</li>
+</ul></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>xarray.Dataset</code></td>
+      <td><p>Dataset containing the computed index/indices.
+    If inplace=True, also keeps the original variables.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">wavelength_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;red&#39;</span><span class="p">:</span> <span class="mi">660</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">:</span> <span class="mi">560</span><span class="p">,</span> <span class="s1">&#39;nir&#39;</span><span class="p">:</span> <span class="mi">840</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">expressions</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">...</span>     <span class="s1">&#39;NDVI&#39;</span><span class="p">:</span> <span class="s1">&#39;(nir - red) / (nir + red)&#39;</span><span class="p">,</span>
+<span class="o">...</span>     <span class="s1">&#39;GNDVI&#39;</span><span class="p">:</span> <span class="s1">&#39;(nir - green) / (nir + green)&#39;</span>
+<span class="o">...</span> <span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">band_math</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">wavelength_dict</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>prismatools/spatial.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">band_math</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
+    <span class="n">expressions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">wavelength_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">constants</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute one or more spectral indices from a hyperspectral dataset using</span>
+<span class="sd">    user-defined expressions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataset (xarray.Dataset): Dataset containing the spectral variable</span>
+<span class="sd">            (e.g., &#39;reflectance&#39;) with dimension &#39;wavelength&#39;.</span>
+<span class="sd">        expressions (dict): Dictionary mapping variable names to expressions,</span>
+<span class="sd">            e.g. {&#39;NDVI&#39;: &#39;(nir - red) / (nir + red)&#39;, &#39;GNDVI&#39;: &#39;(nir - green)/(nir + green)&#39;}.</span>
+<span class="sd">        wavelength_dict (dict): Dictionary mapping band names to wavelengths,</span>
+<span class="sd">            e.g. {&#39;red&#39;: 660, &#39;green&#39;: 560, &#39;nir&#39;: 840}.</span>
+<span class="sd">        constants (dict, optional): Dictionary of constants to include in</span>
+<span class="sd">            all expressions, e.g. {&#39;c&#39;: 0.01}. Defaults to None.</span>
+<span class="sd">        inplace (bool, optional):</span>
+<span class="sd">            - If True, add the computed indices to the input dataset.</span>
+<span class="sd">            - If False, return a new dataset containing only the indices.</span>
+<span class="sd">            Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        xarray.Dataset: Dataset containing the computed index/indices.</span>
+<span class="sd">            If inplace=True, also keeps the original variables.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; wavelength_dict = {&#39;red&#39;: 660, &#39;green&#39;: 560, &#39;nir&#39;: 840}</span>
+<span class="sd">        &gt;&gt;&gt; expressions = {</span>
+<span class="sd">        ...     &#39;NDVI&#39;: &#39;(nir - red) / (nir + red)&#39;,</span>
+<span class="sd">        ...     &#39;GNDVI&#39;: &#39;(nir - green) / (nir + green)&#39;</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; result = band_math(ds, expressions, wavelength_dict, inplace=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">da_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">band</span><span class="p">:</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;reflectance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">wavelength</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">wavelength_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">constants</span><span class="p">:</span>
+        <span class="n">da_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">constants</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">expressions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;__builtins__&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">da_dict</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">varname</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="n">da</span>
+        <span class="k">return</span> <span class="n">dataset</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="prismatools.spatial.pca_image" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">pca_image</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">out_tif</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></code>
+
+
+<a href="#prismatools.spatial.pca_image" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Perform Principal Component Analysis (PCA) on a hyperspectral or multispectral image
+and save the resulting principal components as a GeoTIFF and an xarray.Dataset.</p>
+<p>This function supports both:
+  - <code>xarray.Dataset</code> input containing a 'reflectance' variable with dimensions
+    (y, x, wavelength)
+  - Filepath to a GeoTIFF with shape (bands, rows, cols)</p>
+<p>The function reshapes the image to (pixels, bands), applies PCA, and reshapes the
+principal components back to image dimensions. It also preserves geospatial metadata
+(CRS and transform) when saving the output GeoTIFF.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>input_data</code></td>
+        <td><code>xarray.Dataset or str</code></td>
+        <td><ul>
+<li>xarray.Dataset: Must contain 'reflectance' variable with shape (y, x, wavelength)</li>
+<li>str: Filepath to a GeoTIFF</li>
+</ul></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>out_tif</code></td>
+        <td><code>str</code></td>
+        <td><p>Output path to save the PCA GeoTIFF.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>n_components</code></td>
+        <td><code>int</code></td>
+        <td><p>Number of principal components to compute. Default is 3.</p></td>
+        <td><code>3</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ds_pca (xarray.Dataset)</code></td>
+      <td><p>Dataset containing the principal components with dimensions
+    ("pc", "y", "x") and coordinates:
+      - pc: principal component index (1, 2, ..., n_components)
+      - y: spatial y-coordinate
+      - x: spatial x-coordinate
+expl_var (dict): Explained variance ratio for each principal component, formatted as
+    percentages with two decimals, e.g. {"PC1": "78.32", "PC2": "12.45", ...}</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Using xarray Dataset</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ds_pca</span><span class="p">,</span> <span class="n">expl_var</span> <span class="o">=</span> <span class="n">pca_image</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="s2">&quot;output/pca_image.tif&quot;</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">expl_var</span><span class="p">)</span>
+<span class="p">{</span><span class="s1">&#39;PC1&#39;</span><span class="p">:</span> <span class="s1">&#39;78.32&#39;</span><span class="p">,</span> <span class="s1">&#39;PC2&#39;</span><span class="p">:</span> <span class="s1">&#39;12.45&#39;</span><span class="p">,</span> <span class="s1">&#39;PC3&#39;</span><span class="p">:</span> <span class="s1">&#39;5.67&#39;</span><span class="p">}</span>
+</code></pre></div>
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="c1"># Using GeoTIFF</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ds_pca</span><span class="p">,</span> <span class="n">expl_var</span> <span class="o">=</span> <span class="n">pca_image</span><span class="p">(</span><span class="s2">&quot;input_image.tif&quot;</span><span class="p">,</span> <span class="s2">&quot;output/pca_image.tif&quot;</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+      <div class="admonition notes">
+<p class="admonition-title">Notes</p>
+<ul>
+<li>For xarray input, the function expects the CRS and transform to be set with <code>rioxarray</code>.</li>
+<li>The PCA output GeoTIFF will have <code>n_components</code> bands corresponding to the principal
+  components in order.</li>
+<li>The explained variance ratio provides insight into how much of the data variability
+  is captured by each component.</li>
+</ul>
+</div>
+
+        <details class="quote">
+          <summary>Source code in <code>prismatools/spatial.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pca_image</span><span class="p">(</span>
+    <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">out_tif</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform Principal Component Analysis (PCA) on a hyperspectral or multispectral image</span>
+<span class="sd">    and save the resulting principal components as a GeoTIFF and an xarray.Dataset.</span>
+
+<span class="sd">    This function supports both:</span>
+<span class="sd">      - `xarray.Dataset` input containing a &#39;reflectance&#39; variable with dimensions</span>
+<span class="sd">        (y, x, wavelength)</span>
+<span class="sd">      - Filepath to a GeoTIFF with shape (bands, rows, cols)</span>
+
+<span class="sd">    The function reshapes the image to (pixels, bands), applies PCA, and reshapes the</span>
+<span class="sd">    principal components back to image dimensions. It also preserves geospatial metadata</span>
+<span class="sd">    (CRS and transform) when saving the output GeoTIFF.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_data (xarray.Dataset or str):</span>
+<span class="sd">            - xarray.Dataset: Must contain &#39;reflectance&#39; variable with shape (y, x, wavelength)</span>
+<span class="sd">            - str: Filepath to a GeoTIFF</span>
+<span class="sd">        out_tif (str): Output path to save the PCA GeoTIFF.</span>
+<span class="sd">        n_components (int, optional): Number of principal components to compute. Default is 3.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ds_pca (xarray.Dataset): Dataset containing the principal components with dimensions</span>
+<span class="sd">            (&quot;pc&quot;, &quot;y&quot;, &quot;x&quot;) and coordinates:</span>
+<span class="sd">              - pc: principal component index (1, 2, ..., n_components)</span>
+<span class="sd">              - y: spatial y-coordinate</span>
+<span class="sd">              - x: spatial x-coordinate</span>
+<span class="sd">        expl_var (dict): Explained variance ratio for each principal component, formatted as</span>
+<span class="sd">            percentages with two decimals, e.g. {&quot;PC1&quot;: &quot;78.32&quot;, &quot;PC2&quot;: &quot;12.45&quot;, ...}</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Using xarray Dataset</span>
+<span class="sd">        &gt;&gt;&gt; ds_pca, expl_var = pca_image(ds, &quot;output/pca_image.tif&quot;, n_components=3)</span>
+<span class="sd">        &gt;&gt;&gt; print(expl_var)</span>
+<span class="sd">        {&#39;PC1&#39;: &#39;78.32&#39;, &#39;PC2&#39;: &#39;12.45&#39;, &#39;PC3&#39;: &#39;5.67&#39;}</span>
+
+<span class="sd">        &gt;&gt;&gt; # Using GeoTIFF</span>
+<span class="sd">        &gt;&gt;&gt; ds_pca, expl_var = pca_image(&quot;input_image.tif&quot;, &quot;output/pca_image.tif&quot;, n_components=5)</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - For xarray input, the function expects the CRS and transform to be set with `rioxarray`.</span>
+<span class="sd">        - The PCA output GeoTIFF will have `n_components` bands corresponding to the principal</span>
+<span class="sd">          components in order.</span>
+<span class="sd">        - The explained variance ratio provides insight into how much of the data variability</span>
+<span class="sd">          is captured by each component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">rasterio</span>
+
+    <span class="c1"># read data</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">input_data</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;reflectance&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># rows, cols, bands</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># bands, rows, cols</span>
+        <span class="n">bands</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">x_coords</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">y_coords</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">crs</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">crs</span>
+        <span class="n">geotransform</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">transform</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># shape: bands, rows, cols</span>
+            <span class="n">bands</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">crs</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">crs</span>
+            <span class="n">geotransform</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">transform</span>
+            <span class="n">x_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">geotransform</span> <span class="o">*</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)])</span>
+            <span class="n">y_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">geotransform</span> <span class="o">*</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input_data must be xr.Dataset or a GeoTIFF filepath&quot;</span><span class="p">)</span>
+
+    <span class="c1"># PCA</span>
+    <span class="n">image_reshaped</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="n">rows</span> <span class="o">*</span> <span class="n">cols</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># n_samples, n_bands</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
+    <span class="n">principal_components</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">image_reshaped</span><span class="p">)</span>
+    <span class="n">pca_image</span> <span class="o">=</span> <span class="n">principal_components</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_components</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+
+    <span class="n">expl_var</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sa">f</span><span class="s2">&quot;PC</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1"># write output</span>
+    <span class="n">ds_pca</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
+        <span class="n">data_vars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">pca</span><span class="o">=</span><span class="p">([</span><span class="s2">&quot;pc&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">pca_image</span><span class="p">),</span>
+        <span class="p">),</span>
+        <span class="n">coords</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+            <span class="n">pc</span><span class="o">=</span><span class="p">([</span><span class="s2">&quot;pc&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_components</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">([</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">y_coords</span><span class="p">),</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">x_coords</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">ds_pca</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_crs</span><span class="p">(</span><span class="n">crs</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ds_pca</span><span class="o">.</span><span class="n">rio</span><span class="o">.</span><span class="n">write_transform</span><span class="p">(</span><span class="n">geotransform</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;GTiff&quot;</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="n">pca_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">width</span><span class="o">=</span><span class="n">pca_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="n">count</span><span class="o">=</span><span class="n">pca_image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">pca_image</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">geotransform</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">out_tif</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span> <span class="k">as</span> <span class="n">dst</span><span class="p">:</span>
+        <span class="n">dst</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pca_image</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pca image saved at: </span><span class="si">{</span><span class="n">out_tif</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ds_pca</span><span class="p">,</span> <span class="n">expl_var</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
 
     </div>
 
