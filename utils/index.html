@@ -906,25 +906,6 @@
     </tr>
   </tbody>
 </table>
-<p><strong>Exceptions:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>FileNotFoundError</code></td>
-        <td><p>If the file does not exist.</p></td>
-      </tr>
-      <tr>
-        <td><code>ValueError</code></td>
-        <td><p>If the type is unsupported.</p></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>prismatools/utils.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_valid_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PRS_L2D&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -937,13 +918,9 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        bool: True if file_path points to the correct file, False otherwise.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        FileNotFoundError: If the file does not exist.</span>
-<span class="sd">        ValueError: If the type is unsupported.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
 
     <span class="n">valid_types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;PRS_L2B&quot;</span><span class="p">,</span> <span class="s2">&quot;PRS_L2C&quot;</span><span class="p">,</span> <span class="s2">&quot;PRS_L2D&quot;</span><span class="p">}</span>
     <span class="k">if</span> <span class="nb">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_types</span><span class="p">:</span>
@@ -1036,6 +1013,7 @@ expected in the format (lat, lon).</p>
 <span class="sd">            List of tuples containing coordinates in the format (latitude, longitude).</span>
 <span class="sd">        from_epsg (str): Source EPSG code (e.g. &quot;epsg:4326&quot;).</span>
 <span class="sd">        to_epsg (str): Target EPSG code (e.g. &quot;epsg:32632&quot;).</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        List of tuple containing converted coordinates (x, y)</span>
 <span class="sd">    &quot;&quot;&quot;</span>

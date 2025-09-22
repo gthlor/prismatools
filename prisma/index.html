@@ -700,9 +700,27 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#prismatools.prisma.read_prismaL2BC" class="md-nav__link">
+    <span class="md-ellipsis">
+      read_prismaL2BC()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prismatools.prisma.read_prismaL2D" class="md-nav__link">
     <span class="md-ellipsis">
       read_prismaL2D()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prismatools.prisma.write_prismaL2BC" class="md-nav__link">
+    <span class="md-ellipsis">
+      write_prismaL2BC()
     </span>
   </a>
   
@@ -810,9 +828,27 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#prismatools.prisma.read_prismaL2BC" class="md-nav__link">
+    <span class="md-ellipsis">
+      read_prismaL2BC()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prismatools.prisma.read_prismaL2D" class="md-nav__link">
     <span class="md-ellipsis">
       read_prismaL2D()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prismatools.prisma.write_prismaL2BC" class="md-nav__link">
+    <span class="md-ellipsis">
+      write_prismaL2BC()
     </span>
   </a>
   
@@ -857,7 +893,7 @@
 <a id="prismatools.prisma"></a>
     <div class="doc doc-contents first">
 
-      <p>The prisma module provides functions to read and write PRISMA data products</p>
+      <p>The prisma module provides functions to read and write PRISMA L2 data products</p>
 
 
 
@@ -882,7 +918,10 @@
 
     <div class="doc doc-contents ">
 
-      <p>Save a NumPy array as a georeferenced raster (GeoTIFF by default).</p>
+      <p>Save a NumPy array as a georeferenced raster file (GeoTIFF by default).</p>
+<p>This function writes a 2D (single-band) or 3D (multi-band) NumPy array
+to a raster file using rasterio. Georeferencing can be applied by
+providing a CRS and an affine transform.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -898,55 +937,63 @@
       <tr>
         <td><code>array</code></td>
         <td><code>np.ndarray</code></td>
-        <td><p>Array to save. Shape can be (rows, cols) or (bands, rows, cols).</p></td>
+        <td><p>Input array to save.
+- Shape (rows, cols): single-band raster.
+- Shape (bands, rows, cols): multi-band raster.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>output</code></td>
         <td><code>str</code></td>
-        <td><p>Path to the output file.</p></td>
+        <td><p>Path to the output raster file.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>dtype</code></td>
-        <td><code>np.dtype</code></td>
-        <td><p>Data type for output. Auto-inferred if None.</p></td>
+        <td><code>Optional[np.dtype]</code></td>
+        <td><p>Data type of the output raster. If None, inferred from the array.
+Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>compress</code></td>
         <td><code>str</code></td>
-        <td><p>Compression for GTiff/COG. Defaults to "lzw".</p></td>
+        <td><p>Compression method for the raster (e.g., "lzw", "deflate").
+Defaults to "lzw".</p></td>
         <td><code>&#39;lzw&#39;</code></td>
       </tr>
       <tr>
         <td><code>transpose</code></td>
         <td><code>bool</code></td>
-        <td><p>If True, expects (bands, rows, cols) and transposes.</p></td>
+        <td><p>If True, assumes input shape is (bands, rows, cols) and transposes
+to (rows, cols, bands) before writing. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
       <tr>
         <td><code>crs</code></td>
-        <td><code>str</code></td>
-        <td><p>CRS of the output raster.</p></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Coordinate reference system (e.g., "EPSG:4326").
+If None, no CRS is assigned. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>transform</code></td>
-        <td><code>tuple</code></td>
-        <td><p>Affine transform of the raster.</p></td>
+        <td><code>Optional[tuple]</code></td>
+        <td><p>Affine transform defining georeferencing.
+If None, raster is written without spatial reference.
+Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>driver</code></td>
         <td><code>str</code></td>
-        <td><p>GDAL driver. Defaults to "GTiff".</p></td>
+        <td><p>GDAL driver to use for writing. Defaults to "GTiff".</p></td>
         <td><code>&#39;GTiff&#39;</code></td>
       </tr>
       <tr>
         <td><code>**kwargs</code></td>
         <td></td>
-        <td><p>Extra options for rasterio.open().</p></td>
+        <td><p>Additional keyword arguments passed to <code>rasterio.open()</code>.</p></td>
         <td><code>{}</code></td>
       </tr>
   </tbody>
@@ -980,37 +1027,58 @@
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Save a NumPy array as a georeferenced raster (GeoTIFF by default).</span>
+<span class="sd">    Save a NumPy array as a georeferenced raster file (GeoTIFF by default).</span>
+
+<span class="sd">    This function writes a 2D (single-band) or 3D (multi-band) NumPy array</span>
+<span class="sd">    to a raster file using rasterio. Georeferencing can be applied by</span>
+<span class="sd">    providing a CRS and an affine transform.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        array (np.ndarray): Array to save. Shape can be (rows, cols) or (bands, rows, cols).</span>
-<span class="sd">        output (str): Path to the output file.</span>
-<span class="sd">        dtype (np.dtype, optional): Data type for output. Auto-inferred if None.</span>
-<span class="sd">        compress (str, optional): Compression for GTiff/COG. Defaults to &quot;lzw&quot;.</span>
-<span class="sd">        transpose (bool, optional): If True, expects (bands, rows, cols) and transposes.</span>
-<span class="sd">        crs (str, optional): CRS of the output raster.</span>
-<span class="sd">        transform (tuple, optional): Affine transform of the raster.</span>
-<span class="sd">        driver (str, optional): GDAL driver. Defaults to &quot;GTiff&quot;.</span>
-<span class="sd">        **kwargs: Extra options for rasterio.open().</span>
+<span class="sd">        array (np.ndarray):</span>
+<span class="sd">            Input array to save.</span>
+<span class="sd">            - Shape (rows, cols): single-band raster.</span>
+<span class="sd">            - Shape (bands, rows, cols): multi-band raster.</span>
+<span class="sd">        output (str):</span>
+<span class="sd">            Path to the output raster file.</span>
+<span class="sd">        dtype (Optional[np.dtype], optional):</span>
+<span class="sd">            Data type of the output raster. If None, inferred from the array.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        compress (str, optional):</span>
+<span class="sd">            Compression method for the raster (e.g., &quot;lzw&quot;, &quot;deflate&quot;).</span>
+<span class="sd">            Defaults to &quot;lzw&quot;.</span>
+<span class="sd">        transpose (bool, optional):</span>
+<span class="sd">            If True, assumes input shape is (bands, rows, cols) and transposes</span>
+<span class="sd">            to (rows, cols, bands) before writing. Defaults to True.</span>
+<span class="sd">        crs (Optional[str], optional):</span>
+<span class="sd">            Coordinate reference system (e.g., &quot;EPSG:4326&quot;).</span>
+<span class="sd">            If None, no CRS is assigned. Defaults to None.</span>
+<span class="sd">        transform (Optional[tuple], optional):</span>
+<span class="sd">            Affine transform defining georeferencing.</span>
+<span class="sd">            If None, raster is written without spatial reference.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        driver (str, optional):</span>
+<span class="sd">            GDAL driver to use for writing. Defaults to &quot;GTiff&quot;.</span>
+<span class="sd">        **kwargs:</span>
+<span class="sd">            Additional keyword arguments passed to `rasterio.open()`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: Path to the saved file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># ensure correct shape</span>
+    <span class="c1"># --- ensure correct shape ---</span>
     <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">transpose</span><span class="p">:</span>
         <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
-    <span class="c1"># ensure output directory exists</span>
+    <span class="c1"># --- ensure output directory exists ---</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output</span><span class="p">)),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># get driver from extension</span>
+    <span class="c1"># --- get driver from extension ---</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">output</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">driver_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="s2">&quot;COG&quot;</span><span class="p">,</span> <span class="s2">&quot;.tif&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span> <span class="s2">&quot;.tiff&quot;</span><span class="p">:</span> <span class="s2">&quot;GTiff&quot;</span><span class="p">,</span> <span class="s2">&quot;.dat&quot;</span><span class="p">:</span> <span class="s2">&quot;ENVI&quot;</span><span class="p">}</span>
     <span class="n">driver</span> <span class="o">=</span> <span class="n">driver_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;COG&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ext</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;.tif&quot;</span>
 
-    <span class="c1"># infer dtype if not given</span>
+    <span class="c1"># --- infer dtype if not given ---</span>
     <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">min_val</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">max_val</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1027,7 +1095,7 @@
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
     <span class="n">array</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
 
-    <span class="c1"># set metadata</span>
+    <span class="c1"># --- set metadata ---</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
         <span class="n">driver</span><span class="o">=</span><span class="n">driver</span><span class="p">,</span>
@@ -1042,7 +1110,7 @@
         <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;compress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">compress</span>
     <span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="c1"># write raster</span>
+    <span class="c1"># --- write raster ---</span>
     <span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span> <span class="k">as</span> <span class="n">dst</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># panchromatic</span>
             <span class="n">dst</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1056,7 +1124,7 @@
                     <span class="n">wl</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;wavelengths&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
                     <span class="n">dst</span><span class="o">.</span><span class="n">set_band_description</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Band </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">wl</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> nm)&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">output</span>
+    <span class="k">return</span> <span class="n">output</span>  <span class="c1"># it&#39;s a file path</span>
 </code></pre></div>
         </details>
     </div>
@@ -1078,9 +1146,9 @@
     <div class="doc doc-contents ">
 
       <p>Extracts an averaged reflectance spectrum from a PRISMA hyperspectral dataset.</p>
-<p>A square spatial window is centered at the specified latitude and longitude,
-and the reflectance values within that window are averaged across the spatial
-dimensions to produce a single spectrum.</p>
+<p>A square spatial window is centered at the given latitude and longitude.
+The reflectance values within that window are averaged across the spatial
+dimensions, producing a single spectrum.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1095,29 +1163,29 @@ dimensions to produce a single spectrum.</p>
   <tbody>
       <tr>
         <td><code>dataset</code></td>
-        <td><code>xarray.Dataset</code></td>
-        <td><p>The PRISMA dataset containing reflectance data,
-with valid CRS information.</p></td>
+        <td><code>xr.Dataset</code></td>
+        <td><p>PRISMA dataset containing a variable named "reflectance", with
+valid CRS information and shape (x, y, wavelength).</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>lat</code></td>
         <td><code>float</code></td>
-        <td><p>Latitude of the center point.</p></td>
+        <td><p>Latitude of the center point (in WGS84).</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>lon</code></td>
         <td><code>float</code></td>
-        <td><p>Longitude of the center points.</p></td>
+        <td><p>Longitude of the center point (in WGS84).</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>offset</code></td>
         <td><code>float</code></td>
-        <td><p>Half-size of the square window for extraction,
-expressed in the dataset's projected coordinate units (e.g., meters).
-Defaults to 15.0.</p></td>
+        <td><p>Half-size of the square window for extraction, expressed in the
+dataset's projected coordinate units (e.g., meters).
+Defaults to <code>15.0</code>.</p></td>
         <td><code>15.0</code></td>
       </tr>
   </tbody>
@@ -1149,18 +1217,22 @@ across wavelengths. If no matching pixels are found, returns NaN values.</p></td
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extracts an averaged reflectance spectrum from a PRISMA hyperspectral dataset.</span>
 
-<span class="sd">    A square spatial window is centered at the specified latitude and longitude,</span>
-<span class="sd">    and the reflectance values within that window are averaged across the spatial</span>
-<span class="sd">    dimensions to produce a single spectrum.</span>
+<span class="sd">    A square spatial window is centered at the given latitude and longitude.</span>
+<span class="sd">    The reflectance values within that window are averaged across the spatial</span>
+<span class="sd">    dimensions, producing a single spectrum.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dataset (xarray.Dataset): The PRISMA dataset containing reflectance data,</span>
-<span class="sd">            with valid CRS information.</span>
-<span class="sd">        lat (float): Latitude of the center point.</span>
-<span class="sd">        lon (float): Longitude of the center points.</span>
-<span class="sd">        offset (float, optional): Half-size of the square window for extraction,</span>
-<span class="sd">            expressed in the dataset&#39;s projected coordinate units (e.g., meters).</span>
-<span class="sd">            Defaults to 15.0.</span>
+<span class="sd">        dataset (xr.Dataset):</span>
+<span class="sd">            PRISMA dataset containing a variable named &quot;reflectance&quot;, with</span>
+<span class="sd">            valid CRS information and shape (x, y, wavelength).</span>
+<span class="sd">        lat (float):</span>
+<span class="sd">            Latitude of the center point (in WGS84).</span>
+<span class="sd">        lon (float):</span>
+<span class="sd">            Longitude of the center point (in WGS84).</span>
+<span class="sd">        offset (float, optional):</span>
+<span class="sd">            Half-size of the square window for extraction, expressed in the</span>
+<span class="sd">            dataset&#39;s projected coordinate units (e.g., meters).</span>
+<span class="sd">            Defaults to `15.0`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        xarray.DataArray: A 1D array containing the averaged reflectance values</span>
@@ -1205,6 +1277,246 @@ across wavelengths. If no matching pixels are found, returns NaN values.</p></td
 
 
 
+<h2 id="prismatools.prisma.read_prismaL2BC" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">read_prismaL2BC</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">product_type</span><span class="o">=</span><span class="s1">&#39;PRS_L2B&#39;</span><span class="p">,</span> <span class="n">wavelengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">panchromatic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#prismatools.prisma.read_prismaL2BC" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Reads PRISMA Level-2B or Level-2C .he5 data (VNIR+SWIR or Panchromatic),
+apply scaling from DN to reflectance and return the data together with
+geolocation arrays.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>file_path</code></td>
+        <td><code>str</code></td>
+        <td><p>Path to the PRISMA L2B/L2C <code>.he5</code> file.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>product_type</code></td>
+        <td><code>str</code></td>
+        <td><p>PRISMA product type, either "PRS_L2B" or "PRS_L2C". Defaults to "PRS_L2B".</p></td>
+        <td><code>&#39;PRS_L2B&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>wavelengths</code></td>
+        <td><code>Optional[List[float]]</code></td>
+        <td><p>List of target wavelengths in nanometers to extract (for hyperspectral).
+If None, all available wavelengths are used. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>method</code></td>
+        <td><code>str</code></td>
+        <td><p>Wavelength selection method:
+    - "nearest": select the closest available band for each requested wavelength.
+    - "exact": select only exact matches; raises ValueError if none found.
+Defaults to "nearest".</p></td>
+        <td><code>&#39;nearest&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>panchromatic</code></td>
+        <td><code>bool</code></td>
+        <td><p>If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.
+Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Tuple[np.ndarray, Union[np.ndarray, str], np.ndarray, np.ndarray]</code></td>
+      <td><p>A 4-element tuple containing:
+    - cube_or_pancube (np.ndarray):
+        * Hyperspectral: 3D array with shape (rows, cols, wavelengths) of reflectance
+          (dtype float32) after applying scaling attributes.
+        * Panchromatic: 2D array with shape (rows, cols) of reflectance.
+    - wavelengths (np.ndarray or str):
+        * Hyperspectral: 1D array of wavelengths (in nm) corresponding to the band axis.
+        * Panchromatic: the string "Panchromatic".
+    - lat (np.ndarray): 2D latitude array with shape (rows, cols).
+    - lon (np.ndarray): 2D longitude array with shape (rows, cols).</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>prismatools/prisma.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">read_prismaL2BC</span><span class="p">(</span>
+    <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">product_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PRS_L2B&quot;</span><span class="p">,</span>  <span class="c1"># &quot;PRS_L2B&quot; or &quot;PRS_L2C&quot;</span>
+    <span class="n">wavelengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+    <span class="n">panchromatic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads PRISMA Level-2B or Level-2C .he5 data (VNIR+SWIR or Panchromatic),</span>
+<span class="sd">    apply scaling from DN to reflectance and return the data together with</span>
+<span class="sd">    geolocation arrays.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (str):</span>
+<span class="sd">            Path to the PRISMA L2B/L2C `.he5` file.</span>
+<span class="sd">        product_type (str, optional):</span>
+<span class="sd">            PRISMA product type, either &quot;PRS_L2B&quot; or &quot;PRS_L2C&quot;. Defaults to &quot;PRS_L2B&quot;.</span>
+<span class="sd">        wavelengths (Optional[List[float]], optional):</span>
+<span class="sd">            List of target wavelengths in nanometers to extract (for hyperspectral).</span>
+<span class="sd">            If None, all available wavelengths are used. Defaults to None.</span>
+<span class="sd">        method (str, optional):</span>
+<span class="sd">            Wavelength selection method:</span>
+<span class="sd">                - &quot;nearest&quot;: select the closest available band for each requested wavelength.</span>
+<span class="sd">                - &quot;exact&quot;: select only exact matches; raises ValueError if none found.</span>
+<span class="sd">            Defaults to &quot;nearest&quot;.</span>
+<span class="sd">        panchromatic (bool, optional):</span>
+<span class="sd">            If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.</span>
+<span class="sd">            Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[np.ndarray, Union[np.ndarray, str], np.ndarray, np.ndarray]:</span>
+<span class="sd">            A 4-element tuple containing:</span>
+<span class="sd">            - cube_or_pancube (np.ndarray):</span>
+<span class="sd">                * Hyperspectral: 3D array with shape (rows, cols, wavelengths) of reflectance</span>
+<span class="sd">                  (dtype float32) after applying scaling attributes.</span>
+<span class="sd">                * Panchromatic: 2D array with shape (rows, cols) of reflectance.</span>
+<span class="sd">            - wavelengths (np.ndarray or str):</span>
+<span class="sd">                * Hyperspectral: 1D array of wavelengths (in nm) corresponding to the band axis.</span>
+<span class="sd">                * Panchromatic: the string &quot;Panchromatic&quot;.</span>
+<span class="sd">            - lat (np.ndarray): 2D latitude array with shape (rows, cols).</span>
+<span class="sd">            - lon (np.ndarray): 2D longitude array with shape (rows, cols).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_valid_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">product_type</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> is not a valid </span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2"> file or does not exist.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">panchromatic</span><span class="p">:</span>
+                <span class="c1"># --- PANCHROMATIC ---</span>
+                <span class="n">cube_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_PCO/Data Fields/Cube&quot;</span>
+                <span class="n">pancube_data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">cube_path</span><span class="p">][()]</span>
+
+                <span class="n">fill_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9999</span>
+                <span class="n">max_data_value</span> <span class="o">=</span> <span class="mi">65535</span>
+                <span class="n">l2_scale_pan_min</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;L2ScalePanMin&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">l2_scale_pan_max</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;L2ScalePanMax&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+                <span class="n">pancube_data</span> <span class="o">=</span> <span class="n">l2_scale_pan_min</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="n">pancube_data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">max_data_value</span>
+                <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">l2_scale_pan_max</span> <span class="o">-</span> <span class="n">l2_scale_pan_min</span><span class="p">)</span>
+                <span class="n">pancube_data</span><span class="p">[</span><span class="n">pancube_data</span> <span class="o">==</span> <span class="n">fill_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                <span class="c1"># --- read lat/lon ---</span>
+                <span class="n">lat</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_PCO/Geolocation Fields/Latitude&quot;</span>
+                <span class="p">][()]</span>
+                <span class="n">lon</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_PCO/Geolocation Fields/Longitude&quot;</span>
+                <span class="p">][()]</span>
+
+                <span class="n">wavelengths</span> <span class="o">=</span> <span class="s2">&quot;Panchromatic&quot;</span>
+                <span class="k">return</span> <span class="n">pancube_data</span><span class="p">,</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># --- HYPERSPECTRAL VNIR+SWIR ---</span>
+                <span class="n">cube_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_HCO/Data Fields&quot;</span>
+                <span class="n">vnir_cube</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cube_path</span><span class="si">}</span><span class="s2">/VNIR_Cube&quot;</span><span class="p">][()]</span>
+                <span class="n">swir_cube</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cube_path</span><span class="si">}</span><span class="s2">/SWIR_Cube&quot;</span><span class="p">][()]</span>
+                <span class="n">vnir_wavelengths</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;List_Cw_Vnir&quot;</span><span class="p">][()]</span>
+                <span class="n">swir_wavelengths</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;List_Cw_Swir&quot;</span><span class="p">][()]</span>
+
+                <span class="n">max_data_value</span> <span class="o">=</span> <span class="mi">65535</span>
+                <span class="n">fill_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9999</span>
+
+                <span class="n">l2_scale_vnir_min</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;L2ScaleVnirMin&quot;</span><span class="p">][()]</span>
+                <span class="n">l2_scale_vnir_max</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;L2ScaleVnirMax&quot;</span><span class="p">][()]</span>
+                <span class="n">vnir_cube</span> <span class="o">=</span> <span class="n">l2_scale_vnir_min</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="n">vnir_cube</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">max_data_value</span>
+                <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">l2_scale_vnir_max</span> <span class="o">-</span> <span class="n">l2_scale_vnir_min</span><span class="p">)</span>
+
+                <span class="n">l2_scale_swir_min</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;L2ScaleSwirMin&quot;</span><span class="p">][()]</span>
+                <span class="n">l2_scale_swir_max</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;L2ScaleSwirMax&quot;</span><span class="p">][()]</span>
+                <span class="n">swir_cube</span> <span class="o">=</span> <span class="n">l2_scale_swir_min</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="n">swir_cube</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="n">max_data_value</span>
+                <span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">l2_scale_swir_max</span> <span class="o">-</span> <span class="n">l2_scale_swir_min</span><span class="p">)</span>
+
+                <span class="n">vnir_cube</span><span class="p">[</span><span class="n">vnir_cube</span> <span class="o">==</span> <span class="n">fill_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">swir_cube</span><span class="p">[</span><span class="n">swir_cube</span> <span class="o">==</span> <span class="n">fill_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                <span class="c1"># --- combine cubes ---</span>
+                <span class="n">full_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">vnir_cube</span><span class="p">,</span> <span class="n">swir_cube</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">full_wavelengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">vnir_wavelengths</span><span class="p">,</span> <span class="n">swir_wavelengths</span><span class="p">))</span>
+
+                <span class="c1"># --- filter and sort wavelengths ---</span>
+                <span class="n">valid_idx</span> <span class="o">=</span> <span class="n">full_wavelengths</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">full_wavelengths</span> <span class="o">=</span> <span class="n">full_wavelengths</span><span class="p">[</span><span class="n">valid_idx</span><span class="p">]</span>
+                <span class="n">full_cube</span> <span class="o">=</span> <span class="n">full_cube</span><span class="p">[:,</span> <span class="n">valid_idx</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">full_wavelengths</span><span class="p">)</span>
+                <span class="n">full_wavelengths</span> <span class="o">=</span> <span class="n">full_wavelengths</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+                <span class="n">full_cube</span> <span class="o">=</span> <span class="n">full_cube</span><span class="p">[:,</span> <span class="n">sort_idx</span><span class="p">,</span> <span class="p">:]</span>
+
+                <span class="c1"># --- select requested wavelengths ---</span>
+                <span class="k">if</span> <span class="n">wavelengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">requested</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;exact&quot;</span><span class="p">:</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">full_wavelengths</span><span class="p">,</span> <span class="n">requested</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;No requested wavelengths found (exact match).&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">full_wavelengths</span> <span class="o">-</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">requested</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="n">full_wavelengths</span> <span class="o">=</span> <span class="n">full_wavelengths</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="n">full_cube</span> <span class="o">=</span> <span class="n">full_cube</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+
+                <span class="n">full_cube</span> <span class="o">=</span> <span class="n">full_cube</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># --- read lat/lon ---</span>
+                <span class="n">lat</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_HCO/Geolocation Fields/Latitude&quot;</span>
+                <span class="p">][()]</span>
+                <span class="n">lon</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span>
+                    <span class="sa">f</span><span class="s2">&quot;HDFEOS/SWATHS/</span><span class="si">{</span><span class="n">product_type</span><span class="si">}</span><span class="s2">_HCO/Geolocation Fields/Longitude&quot;</span>
+                <span class="p">][()]</span>
+
+                <span class="k">return</span> <span class="n">full_cube</span><span class="p">,</span> <span class="n">full_wavelengths</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading the file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="prismatools.prisma.read_prismaL2D" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">read_prismaL2D</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">wavelengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">panchromatic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
@@ -1213,8 +1525,10 @@ across wavelengths. If no matching pixels are found, returns NaN values.</p></td
 
     <div class="doc doc-contents ">
 
-      <p>Reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic)
-and returns an xarray.Dataset with reflectance values and geospatial metadata.</p>
+      <p>The function reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic),
+applies digital number to reflectance scaling, handles fill values, optionally
+selects specific wavelengths, and builds an xarray.Dataset with spatial
+coordinates and CRS information.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1236,23 +1550,25 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
       <tr>
         <td><code>wavelengths</code></td>
         <td><code>Optional[List[float]]</code></td>
-        <td><p>List of wavelengths (in nm) to extract
-(only for hyperspectral cube).
-- If None, all valid wavelengths are used.
-- If provided, can select by exact match or nearest available wavelength.</p></td>
+        <td><p>List of wavelengths (in nm) to extract (hyperspectral only).
+- If None, all available wavelengths are used.
+- If provided, can select by exact match or nearest available wavelength
+  depending on <code>method</code>.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>method</code></td>
-        <td><code>str, default &#34;nearest&#34;</code></td>
-        <td><p>Method for wavelength selection ("nearest" or "exact").</p></td>
+        <td><code>str</code></td>
+        <td><p>Wavelength selection method (used if <code>wavelengths</code> is provided, hyperspectral only):
+- "nearest" (default): select the closest available band for each requested wavelength.
+- "exact": select only exact matches; raises ValueError if none found.</p></td>
         <td><code>&#39;nearest&#39;</code></td>
       </tr>
       <tr>
         <td><code>panchromatic</code></td>
-        <td><code>bool, default False</code></td>
-        <td><p>If True, read the panchromatic cube.
-                                If False, read the hyperspectral cube.</p></td>
+        <td><code>bool</code></td>
+        <td><p>If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.
+Defaults to False.</p></td>
         <td><code>False</code></td>
       </tr>
   </tbody>
@@ -1268,7 +1584,9 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
   <tbody>
     <tr>
       <td><code>xr.Dataset</code></td>
-      <td><p>An xarray.Dataset containing reflectance data with coordinates.</p></td>
+      <td><p>An xarray.Dataset containing reflectance data with dimensions:
+    - Hyperspectral: ("y", "x", "wavelength")
+    - Panchromatic: ("y", "x")</p></td>
     </tr>
   </tbody>
 </table>
@@ -1281,27 +1599,36 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
     <span class="n">panchromatic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic)</span>
-<span class="sd">    and returns an xarray.Dataset with reflectance values and geospatial metadata.</span>
+<span class="sd">    The function reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic),</span>
+<span class="sd">    applies digital number to reflectance scaling, handles fill values, optionally</span>
+<span class="sd">    selects specific wavelengths, and builds an xarray.Dataset with spatial</span>
+<span class="sd">    coordinates and CRS information.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        file_path (str): Path to the PRISMA L2D .he5 file.</span>
-<span class="sd">        wavelengths (Optional[List[float]]): List of wavelengths (in nm) to extract</span>
-<span class="sd">            (only for hyperspectral cube).</span>
-<span class="sd">            - If None, all valid wavelengths are used.</span>
-<span class="sd">            - If provided, can select by exact match or nearest available wavelength.</span>
-<span class="sd">        method (str, default &quot;nearest&quot;): Method for wavelength selection (&quot;nearest&quot; or &quot;exact&quot;).</span>
-<span class="sd">        panchromatic (bool, default False): If True, read the panchromatic cube.</span>
-<span class="sd">                                            If False, read the hyperspectral cube.</span>
+<span class="sd">        file_path (str):</span>
+<span class="sd">            Path to the PRISMA L2D .he5 file.</span>
+<span class="sd">        wavelengths (Optional[List[float]], optional):</span>
+<span class="sd">            List of wavelengths (in nm) to extract (hyperspectral only).</span>
+<span class="sd">            - If None, all available wavelengths are used.</span>
+<span class="sd">            - If provided, can select by exact match or nearest available wavelength</span>
+<span class="sd">              depending on `method`.</span>
+<span class="sd">        method (str, optional):</span>
+<span class="sd">            Wavelength selection method (used if `wavelengths` is provided, hyperspectral only):</span>
+<span class="sd">            - &quot;nearest&quot; (default): select the closest available band for each requested wavelength.</span>
+<span class="sd">            - &quot;exact&quot;: select only exact matches; raises ValueError if none found.</span>
+<span class="sd">        panchromatic (bool, optional):</span>
+<span class="sd">            If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.</span>
+<span class="sd">            Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        xr.Dataset: An xarray.Dataset containing reflectance data with coordinates.</span>
+<span class="sd">        xr.Dataset:</span>
+<span class="sd">        An xarray.Dataset containing reflectance data with dimensions:</span>
+<span class="sd">            - Hyperspectral: (&quot;y&quot;, &quot;x&quot;, &quot;wavelength&quot;)</span>
+<span class="sd">            - Panchromatic: (&quot;y&quot;, &quot;x&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check if file is valid</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">check_valid_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;PRS_L2D&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> is not a valid PRS_L2D file or does not exist.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> is not a valid PRS_L2D file or does not exist.&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -1460,6 +1787,232 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
 
 
 
+<h2 id="prismatools.prisma.write_prismaL2BC" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">write_prismaL2BC</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">product_type</span><span class="o">=</span><span class="s1">&#39;PRS_L2B&#39;</span><span class="p">,</span> <span class="n">panchromatic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wavelengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#prismatools.prisma.write_prismaL2BC" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert a PRISMA Level-2B/2C dataset (.he5) into a georeferenced raster image.</p>
+<p>This function loads PRISMA hyperspectral (VNIR+SWIR) or panchromatic data,
+applies scaling and georeferencing using latitude/longitude fields, and writes
+the result to a raster file (e.g., GeoTIFF).</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>filepath</code></td>
+        <td><code>str</code></td>
+        <td><p>Path to the input PRISMA L2B/L2C <code>.he5</code> file.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>output</code></td>
+        <td><code>str</code></td>
+        <td><p>Path where the output raster will be saved.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>product_type</code></td>
+        <td><code>str</code></td>
+        <td><p>PRISMA product type, either <code>"PRS_L2B"</code> or <code>"PRS_L2C"</code>.
+Defaults to <code>"PRS_L2B"</code>.</p></td>
+        <td><code>&#39;PRS_L2B&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>panchromatic</code></td>
+        <td><code>bool</code></td>
+        <td><p>If True, treat the dataset as a single-band panchromatic cube.
+If False, read the hyperspectral VNIR+SWIR cubes.
+Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>wavelengths</code></td>
+        <td><code>Optional[np.ndarray]</code></td>
+        <td><p>List/array of wavelengths (in nm) to select (hyperspectral only).
+If None, all available wavelengths are included.
+Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>method</code></td>
+        <td><code>str</code></td>
+        <td><p>Method for wavelength selection:
+    - <code>"nearest"</code>: select the closest available band for each requested wavelength.
+    - <code>"exact"</code>: select only exact matches.
+Defaults to <code>"nearest"</code>.</p></td>
+        <td><code>&#39;nearest&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>Additional keyword arguments passed to:
+    - <code>array_to_image()</code> for raster writing
+    - <code>rasterio.open()</code> for file creation</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>str</code></td>
+      <td><p>Output file path, or None if all values are NaN.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>prismatools/prisma.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">write_prismaL2BC</span><span class="p">(</span>
+    <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">product_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PRS_L2B&quot;</span><span class="p">,</span>  <span class="c1"># &quot;PRS_L2B&quot; or &quot;PRS_L2C&quot;</span>
+    <span class="n">panchromatic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">wavelengths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a PRISMA Level-2B/2C dataset (.he5) into a georeferenced raster image.</span>
+
+<span class="sd">    This function loads PRISMA hyperspectral (VNIR+SWIR) or panchromatic data,</span>
+<span class="sd">    applies scaling and georeferencing using latitude/longitude fields, and writes</span>
+<span class="sd">    the result to a raster file (e.g., GeoTIFF).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filepath (str):</span>
+<span class="sd">            Path to the input PRISMA L2B/L2C `.he5` file.</span>
+<span class="sd">        output (str):</span>
+<span class="sd">            Path where the output raster will be saved.</span>
+<span class="sd">        product_type (str, optional):</span>
+<span class="sd">            PRISMA product type, either `&quot;PRS_L2B&quot;` or `&quot;PRS_L2C&quot;`.</span>
+<span class="sd">            Defaults to `&quot;PRS_L2B&quot;`.</span>
+<span class="sd">        panchromatic (bool, optional):</span>
+<span class="sd">            If True, treat the dataset as a single-band panchromatic cube.</span>
+<span class="sd">            If False, read the hyperspectral VNIR+SWIR cubes.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        wavelengths (Optional[np.ndarray], optional):</span>
+<span class="sd">            List/array of wavelengths (in nm) to select (hyperspectral only).</span>
+<span class="sd">            If None, all available wavelengths are included.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        method (str, optional):</span>
+<span class="sd">            Method for wavelength selection:</span>
+<span class="sd">                - `&quot;nearest&quot;`: select the closest available band for each requested wavelength.</span>
+<span class="sd">                - `&quot;exact&quot;`: select only exact matches.</span>
+<span class="sd">            Defaults to `&quot;nearest&quot;`.</span>
+<span class="sd">        **kwargs (Any):</span>
+<span class="sd">            Additional keyword arguments passed to:</span>
+<span class="sd">                - `array_to_image()` for raster writing</span>
+<span class="sd">                - `rasterio.open()` for file creation</span>
+
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: Output file path, or None if all values are NaN.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">affine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Affine</span>
+
+    <span class="c1"># load dataset if it&#39;s a path to .he5</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">wavelengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">full_cube</span><span class="p">,</span> <span class="n">full_wavelengths</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">read_prismaL2BC</span><span class="p">(</span>
+                <span class="n">filepath</span><span class="p">,</span>
+                <span class="n">product_type</span><span class="o">=</span><span class="n">product_type</span><span class="p">,</span>
+                <span class="n">wavelengths</span><span class="o">=</span><span class="n">wavelengths</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">panchromatic</span><span class="o">=</span><span class="n">panchromatic</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">full_cube</span><span class="p">,</span> <span class="n">full_wavelengths</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">read_prismaL2BC</span><span class="p">(</span>
+                <span class="n">filepath</span><span class="p">,</span>
+                <span class="n">product_type</span><span class="o">=</span><span class="n">product_type</span><span class="p">,</span>
+                <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">panchromatic</span><span class="o">=</span><span class="n">panchromatic</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="c1"># get np.array</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">full_cube</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: All reflectance values are NaN. Output image will be blank.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># get band names (wavelength) and, eventually, select specific bands</span>
+    <span class="k">if</span> <span class="n">panchromatic</span><span class="p">:</span>  <span class="c1"># panchromatic</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;band_description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_wavelengths</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># cube</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;wavelengths&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">full_wavelengths</span>
+
+    <span class="c1"># define transform</span>
+    <span class="n">res_y</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">/</span> <span class="mi">111320</span>
+    <span class="n">res_x</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">/</span> <span class="p">(</span><span class="mi">111320</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">mean</span><span class="p">())))</span>
+
+    <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">lon</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">res_x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">lon</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">res_x</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">lat</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">res_y</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">lat</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">res_y</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span>
+
+    <span class="n">ext_width</span> <span class="o">=</span> <span class="n">extent</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ext_height</span> <span class="o">=</span> <span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">extent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">lat</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">xResolution</span> <span class="o">=</span> <span class="n">ext_width</span> <span class="o">/</span> <span class="n">width</span>
+    <span class="n">yResolution</span> <span class="o">=</span> <span class="n">ext_height</span> <span class="o">/</span> <span class="n">height</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lat</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">lat</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">lat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+        <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">):</span>
+
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">Affine</span><span class="p">(</span><span class="n">xResolution</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">extent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">yResolution</span><span class="p">,</span> <span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">lat</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">dx_col</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+        <span class="n">dy_col</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span>
+        <span class="n">dx_row</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x0</span>
+        <span class="n">dy_row</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y0</span>
+
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">Affine</span><span class="p">(</span><span class="n">dx_col</span><span class="p">,</span> <span class="n">dx_row</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dy_col</span><span class="p">,</span> <span class="n">dy_row</span><span class="p">,</span> <span class="n">y0</span><span class="p">)</span>
+
+    <span class="c1"># write output</span>
+    <span class="k">return</span> <span class="n">array_to_image</span><span class="p">(</span>
+        <span class="n">array</span><span class="p">,</span>
+        <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
+        <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;EPSG:4326&quot;</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="prismatools.prisma.write_prismaL2D" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">write_prismaL2D</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">panchromatic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wavelengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
@@ -1468,7 +2021,10 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
 
     <div class="doc doc-contents ">
 
-      <p>Converts a PRISMA hyperspectral dataset to a georeferenced image.</p>
+      <p>Write a PRISMA Level-2D dataset to a georeferenced raster file.</p>
+<p>This function takes a PRISMA Level-2D hyperspectral or panchromatic dataset
+(or the path to a <code>.he5</code> file), extracts reflectance data and georeferencing
+information, and saves it as a raster image (GeoTIFF by default).</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1484,39 +2040,45 @@ and returns an xarray.Dataset with reflectance values and geospatial metadata.</
       <tr>
         <td><code>dataset</code></td>
         <td><code>Union[xr.Dataset, str]</code></td>
-        <td><p>The PRISMA dataset or the path to the
-dataset file (.he5).</p></td>
+        <td><p>PRISMA dataset as an <code>xarray.Dataset</code> or the path to a Level-2D <code>.he5</code> file.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>output</code></td>
         <td><code>str</code></td>
-        <td><p>File path to save the output raster.</p></td>
+        <td><p>Path to the output raster file.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>panchromatic</code></td>
         <td><code>bool</code></td>
-        <td><p>If True, treat array as single-band pancromatic. Defaults to False.</p></td>
+        <td><p>If True, treat the dataset as a single-band panchromatic image.
+Defaults to False.</p></td>
         <td><code>False</code></td>
       </tr>
       <tr>
         <td><code>wavelengths</code></td>
-        <td><code>np.ndarray</code></td>
-        <td><p>Wavelengths to select from the dataset.
-If None, all wavelengths are included. Defaults to None.</p></td>
+        <td><code>Optional[np.ndarray]</code></td>
+        <td><p>Wavelengths (in nm) to select from the dataset (hyperspectral only).
+If None, all available wavelengths are included.
+Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>method</code></td>
         <td><code>str</code></td>
-        <td><p>Method to use for wavelength selection (e.g. "nearest").</p></td>
+        <td><p>Wavelength selection method (hyperspectral only):
+    - <code>"nearest"</code>: select closest available bands.
+    - <code>"exact"</code>: select exact matches only.
+Defaults to <code>"nearest"</code>.</p></td>
         <td><code>&#39;nearest&#39;</code></td>
       </tr>
       <tr>
         <td><code>**kwargs</code></td>
         <td><code>Any</code></td>
-        <td><p>Additional arguments passed to 'array_to_image()' and to 'rasterio.open()'.</p></td>
+        <td><p>Additional keyword arguments passed to:
+    - <code>array_to_image()</code> for raster writing.
+    - <code>rasterio.open()</code> for file creation.</p></td>
         <td><code>{}</code></td>
       </tr>
   </tbody>
@@ -1547,17 +2109,33 @@ If None, all wavelengths are included. Defaults to None.</p></td>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a PRISMA hyperspectral dataset to a georeferenced image.</span>
+<span class="sd">    Write a PRISMA Level-2D dataset to a georeferenced raster file.</span>
+
+<span class="sd">    This function takes a PRISMA Level-2D hyperspectral or panchromatic dataset</span>
+<span class="sd">    (or the path to a `.he5` file), extracts reflectance data and georeferencing</span>
+<span class="sd">    information, and saves it as a raster image (GeoTIFF by default).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        dataset (Union[xr.Dataset, str]): The PRISMA dataset or the path to the</span>
-<span class="sd">            dataset file (.he5).</span>
-<span class="sd">        output (str): File path to save the output raster.</span>
-<span class="sd">        panchromatic (bool, optional): If True, treat array as single-band pancromatic. Defaults to False.</span>
-<span class="sd">        wavelengths (np.ndarray, optional): Wavelengths to select from the dataset.</span>
-<span class="sd">            If None, all wavelengths are included. Defaults to None.</span>
-<span class="sd">        method (str, optional): Method to use for wavelength selection (e.g. &quot;nearest&quot;).</span>
-<span class="sd">        **kwargs (Any): Additional arguments passed to &#39;array_to_image()&#39; and to &#39;rasterio.open()&#39;.</span>
+<span class="sd">        dataset (Union[xr.Dataset, str]):</span>
+<span class="sd">            PRISMA dataset as an `xarray.Dataset` or the path to a Level-2D `.he5` file.</span>
+<span class="sd">        output (str):</span>
+<span class="sd">            Path to the output raster file.</span>
+<span class="sd">        panchromatic (bool, optional):</span>
+<span class="sd">            If True, treat the dataset as a single-band panchromatic image.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        wavelengths (Optional[np.ndarray], optional):</span>
+<span class="sd">            Wavelengths (in nm) to select from the dataset (hyperspectral only).</span>
+<span class="sd">            If None, all available wavelengths are included.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        method (str, optional):</span>
+<span class="sd">            Wavelength selection method (hyperspectral only):</span>
+<span class="sd">                - `&quot;nearest&quot;`: select closest available bands.</span>
+<span class="sd">                - `&quot;exact&quot;`: select exact matches only.</span>
+<span class="sd">            Defaults to `&quot;nearest&quot;`.</span>
+<span class="sd">        **kwargs (Any):</span>
+<span class="sd">            Additional keyword arguments passed to:</span>
+<span class="sd">                - `array_to_image()` for raster writing.</span>
+<span class="sd">                - `rasterio.open()` for file creation.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: Output file path, or None if all values are NaN.</span>
