@@ -80,8 +80,9 @@ nav:
     - Changelog: changelog.md
     - Report Issues: https://github.com/gthlor/prismatools/issues
     - Examples:
-        - examples/01_reading_and_exporting_PRISMA_cube.ipynb
-        - examples/02_visualize_prisma.ipynb
+        - examples/01_reading_and_exporting.ipynb
+        - examples/02_interactive_visualization.ipynb
+        - examples/03_spatial_analysis.ipynb
     - API Reference:
           - prismatools module: prismatools.md
           - gui module: gui.md
