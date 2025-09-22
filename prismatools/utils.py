@@ -18,13 +18,9 @@ def check_valid_file(file_path: str, type: str = "PRS_L2D") -> bool:
 
     Returns:
         bool: True if file_path points to the correct file, False otherwise.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        ValueError: If the type is unsupported.
     """
     if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"The file {file_path} does not exist.")
+        raise FileNotFoundError(f"{file_path} does not exist.")
 
     valid_types = {"PRS_L2B", "PRS_L2C", "PRS_L2D"}
     if type not in valid_types:
@@ -48,6 +44,7 @@ def convert_coords(
             List of tuples containing coordinates in the format (latitude, longitude).
         from_epsg (str): Source EPSG code (e.g. "epsg:4326").
         to_epsg (str): Target EPSG code (e.g. "epsg:32632").
+
     Returns:
         List of tuple containing converted coordinates (x, y)
     """

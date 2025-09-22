@@ -1,6 +1,6 @@
-"""The prisma module provides functions to read and write PRISMA data products"""
+"""The prisma module provides functions to read and write PRISMA L2 data products"""
 
-# TODO: currently supports PRISMA L2D; L2B/L2C support not implemented yet.
+# TODO: check if "extract_prisma" works also for panchromatic data.
 
 import os
 import numpy as np
@@ -20,27 +20,36 @@ def read_prismaL2D(
     panchromatic: bool = False,
 ) -> xr.Dataset:
     """
-    Reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic)
-    and returns an xarray.Dataset with reflectance values and geospatial metadata.
+    The function reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic),
+    applies digital number to reflectance scaling, handles fill values, optionally
+    selects specific wavelengths, and builds an xarray.Dataset with spatial
+    coordinates and CRS information.
 
     Args:
-        file_path (str): Path to the PRISMA L2D .he5 file.
-        wavelengths (Optional[List[float]]): List of wavelengths (in nm) to extract
-            (only for hyperspectral cube).
-            - If None, all valid wavelengths are used.
-            - If provided, can select by exact match or nearest available wavelength.
-        method (str, default "nearest"): Method for wavelength selection ("nearest" or "exact").
-        panchromatic (bool, default False): If True, read the panchromatic cube.
-                                            If False, read the hyperspectral cube.
+        file_path (str):
+            Path to the PRISMA L2D .he5 file.
+        wavelengths (Optional[List[float]], optional):
+            List of wavelengths (in nm) to extract (hyperspectral only).
+            - If None, all available wavelengths are used.
+            - If provided, can select by exact match or nearest available wavelength
+              depending on `method`.
+        method (str, optional):
+            Wavelength selection method (used if `wavelengths` is provided, hyperspectral only):
+            - "nearest" (default): select the closest available band for each requested wavelength.
+            - "exact": select only exact matches; raises ValueError if none found.
+        panchromatic (bool, optional):
+            If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.
+            Defaults to False.
 
     Returns:
-        xr.Dataset: An xarray.Dataset containing reflectance data with coordinates.
+        xr.Dataset:
+        An xarray.Dataset containing reflectance data with dimensions:
+            - Hyperspectral: ("y", "x", "wavelength")
+            - Panchromatic: ("y", "x")
     """
     # check if file is valid
     if not check_valid_file(file_path, type="PRS_L2D"):
-        raise ValueError(
-            f"The file {file_path} is not a valid PRS_L2D file or does not exist."
-        )
+        raise ValueError(f"{file_path} is not a valid PRS_L2D file or does not exist.")
 
     try:
         with h5py.File(file_path, "r") as f:
@@ -198,17 +207,33 @@ def write_prismaL2D(
     **kwargs: Any,
 ) -> Optional[str]:
     """
-    Converts a PRISMA hyperspectral dataset to a georeferenced image.
+    Write a PRISMA Level-2D dataset to a georeferenced raster file.
+
+    This function takes a PRISMA Level-2D hyperspectral or panchromatic dataset
+    (or the path to a `.he5` file), extracts reflectance data and georeferencing
+    information, and saves it as a raster image (GeoTIFF by default).
 
     Args:
-        dataset (Union[xr.Dataset, str]): The PRISMA dataset or the path to the
-            dataset file (.he5).
-        output (str): File path to save the output raster.
-        panchromatic (bool, optional): If True, treat array as single-band pancromatic. Defaults to False.
-        wavelengths (np.ndarray, optional): Wavelengths to select from the dataset.
-            If None, all wavelengths are included. Defaults to None.
-        method (str, optional): Method to use for wavelength selection (e.g. "nearest").
-        **kwargs (Any): Additional arguments passed to 'array_to_image()' and to 'rasterio.open()'.
+        dataset (Union[xr.Dataset, str]):
+            PRISMA dataset as an `xarray.Dataset` or the path to a Level-2D `.he5` file.
+        output (str):
+            Path to the output raster file.
+        panchromatic (bool, optional):
+            If True, treat the dataset as a single-band panchromatic image.
+            Defaults to False.
+        wavelengths (Optional[np.ndarray], optional):
+            Wavelengths (in nm) to select from the dataset (hyperspectral only).
+            If None, all available wavelengths are included.
+            Defaults to None.
+        method (str, optional):
+            Wavelength selection method (hyperspectral only):
+                - `"nearest"`: select closest available bands.
+                - `"exact"`: select exact matches only.
+            Defaults to `"nearest"`.
+        **kwargs (Any):
+            Additional keyword arguments passed to:
+                - `array_to_image()` for raster writing.
+                - `rasterio.open()` for file creation.
 
     Returns:
         str: Output file path, or None if all values are NaN.
@@ -251,18 +276,22 @@ def extract_prisma(
     """
     Extracts an averaged reflectance spectrum from a PRISMA hyperspectral dataset.
 
-    A square spatial window is centered at the specified latitude and longitude,
-    and the reflectance values within that window are averaged across the spatial
-    dimensions to produce a single spectrum.
+    A square spatial window is centered at the given latitude and longitude.
+    The reflectance values within that window are averaged across the spatial
+    dimensions, producing a single spectrum.
 
     Args:
-        dataset (xarray.Dataset): The PRISMA dataset containing reflectance data,
-            with valid CRS information.
-        lat (float): Latitude of the center point.
-        lon (float): Longitude of the center points.
-        offset (float, optional): Half-size of the square window for extraction,
-            expressed in the dataset's projected coordinate units (e.g., meters).
-            Defaults to 15.0.
+        dataset (xr.Dataset):
+            PRISMA dataset containing a variable named "reflectance", with
+            valid CRS information and shape (x, y, wavelength).
+        lat (float):
+            Latitude of the center point (in WGS84).
+        lon (float):
+            Longitude of the center point (in WGS84).
+        offset (float, optional):
+            Half-size of the square window for extraction, expressed in the
+            dataset's projected coordinate units (e.g., meters).
+            Defaults to `15.0`.
 
     Returns:
         xarray.DataArray: A 1D array containing the averaged reflectance values
@@ -309,37 +338,58 @@ def array_to_image(
     **kwargs,
 ) -> str:
     """
-    Save a NumPy array as a georeferenced raster (GeoTIFF by default).
+    Save a NumPy array as a georeferenced raster file (GeoTIFF by default).
+
+    This function writes a 2D (single-band) or 3D (multi-band) NumPy array
+    to a raster file using rasterio. Georeferencing can be applied by
+    providing a CRS and an affine transform.
 
     Args:
-        array (np.ndarray): Array to save. Shape can be (rows, cols) or (bands, rows, cols).
-        output (str): Path to the output file.
-        dtype (np.dtype, optional): Data type for output. Auto-inferred if None.
-        compress (str, optional): Compression for GTiff/COG. Defaults to "lzw".
-        transpose (bool, optional): If True, expects (bands, rows, cols) and transposes.
-        crs (str, optional): CRS of the output raster.
-        transform (tuple, optional): Affine transform of the raster.
-        driver (str, optional): GDAL driver. Defaults to "GTiff".
-        **kwargs: Extra options for rasterio.open().
+        array (np.ndarray):
+            Input array to save.
+            - Shape (rows, cols): single-band raster.
+            - Shape (bands, rows, cols): multi-band raster.
+        output (str):
+            Path to the output raster file.
+        dtype (Optional[np.dtype], optional):
+            Data type of the output raster. If None, inferred from the array.
+            Defaults to None.
+        compress (str, optional):
+            Compression method for the raster (e.g., "lzw", "deflate").
+            Defaults to "lzw".
+        transpose (bool, optional):
+            If True, assumes input shape is (bands, rows, cols) and transposes
+            to (rows, cols, bands) before writing. Defaults to True.
+        crs (Optional[str], optional):
+            Coordinate reference system (e.g., "EPSG:4326").
+            If None, no CRS is assigned. Defaults to None.
+        transform (Optional[tuple], optional):
+            Affine transform defining georeferencing.
+            If None, raster is written without spatial reference.
+            Defaults to None.
+        driver (str, optional):
+            GDAL driver to use for writing. Defaults to "GTiff".
+        **kwargs:
+            Additional keyword arguments passed to `rasterio.open()`.
 
     Returns:
         str: Path to the saved file.
     """
-    # ensure correct shape
+    # --- ensure correct shape ---
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
 
-    # ensure output directory exists
+    # --- ensure output directory exists ---
     os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
 
-    # get driver from extension
+    # --- get driver from extension ---
     ext = os.path.splitext(output)[-1].lower()
     driver_map = {"": "COG", ".tif": "GTiff", ".tiff": "GTiff", ".dat": "ENVI"}
     driver = driver_map.get(ext, "COG")
     if ext == "":
         output += ".tif"
 
-    # infer dtype if not given
+    # --- infer dtype if not given ---
     if dtype is None:
         min_val, max_val = np.nanmin(array), np.nanmax(array)
         if min_val >= 0 and max_val <= 1:
@@ -356,7 +406,7 @@ def array_to_image(
             dtype = np.float64
     array = array.astype(dtype)
 
-    # set metadata
+    # --- set metadata ---
     count = 1 if array.ndim == 2 else array.shape[2]
     metadata = dict(
         driver=driver,
@@ -371,7 +421,7 @@ def array_to_image(
         metadata["compress"] = compress
     metadata.update(**kwargs)
 
-    # write raster
+    # --- write raster ---
     with rasterio.open(output, "w", **metadata) as dst:
         if array.ndim == 2:  # panchromatic
             dst.write(array, 1)
@@ -385,4 +435,269 @@ def array_to_image(
                     wl = kwargs["wavelengths"][i]
                     dst.set_band_description(i + 1, f"Band {i+1} ({wl:.1f} nm)")
 
-    return output
+    return output  # it's a file path
+
+
+def read_prismaL2BC(
+    file_path: str,
+    product_type: str = "PRS_L2B",  # "PRS_L2B" or "PRS_L2C"
+    wavelengths: Optional[List[float]] = None,
+    method: str = "nearest",
+    panchromatic: bool = False,
+) -> Tuple[np.ndarray, Union[np.ndarray, str], np.ndarray, np.ndarray]:
+    """
+    Reads PRISMA Level-2B or Level-2C .he5 data (VNIR+SWIR or Panchromatic),
+    apply scaling from DN to reflectance and return the data together with
+    geolocation arrays.
+
+    Args:
+        file_path (str):
+            Path to the PRISMA L2B/L2C `.he5` file.
+        product_type (str, optional):
+            PRISMA product type, either "PRS_L2B" or "PRS_L2C". Defaults to "PRS_L2B".
+        wavelengths (Optional[List[float]], optional):
+            List of target wavelengths in nanometers to extract (for hyperspectral).
+            If None, all available wavelengths are used. Defaults to None.
+        method (str, optional):
+            Wavelength selection method:
+                - "nearest": select the closest available band for each requested wavelength.
+                - "exact": select only exact matches; raises ValueError if none found.
+            Defaults to "nearest".
+        panchromatic (bool, optional):
+            If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.
+            Defaults to False.
+
+    Returns:
+        Tuple[np.ndarray, Union[np.ndarray, str], np.ndarray, np.ndarray]:
+            A 4-element tuple containing:
+            - cube_or_pancube (np.ndarray):
+                * Hyperspectral: 3D array with shape (rows, cols, wavelengths) of reflectance
+                  (dtype float32) after applying scaling attributes.
+                * Panchromatic: 2D array with shape (rows, cols) of reflectance.
+            - wavelengths (np.ndarray or str):
+                * Hyperspectral: 1D array of wavelengths (in nm) corresponding to the band axis.
+                * Panchromatic: the string "Panchromatic".
+            - lat (np.ndarray): 2D latitude array with shape (rows, cols).
+            - lon (np.ndarray): 2D longitude array with shape (rows, cols).
+    """
+    if not check_valid_file(file_path, type=product_type):
+        raise ValueError(
+            f"{file_path} is not a valid {product_type} file or does not exist."
+        )
+
+    try:
+        with h5py.File(file_path, "r") as f:
+            if panchromatic:
+                # --- PANCHROMATIC ---
+                cube_path = f"HDFEOS/SWATHS/{product_type}_PCO/Data Fields/Cube"
+                pancube_data = f[cube_path][()]
+
+                fill_value = -9999
+                max_data_value = 65535
+                l2_scale_pan_min = f.attrs.get("L2ScalePanMin", 0.0)
+                l2_scale_pan_max = f.attrs.get("L2ScalePanMax", 1.0)
+
+                pancube_data = l2_scale_pan_min + (
+                    pancube_data.astype(np.float32) / max_data_value
+                ) * (l2_scale_pan_max - l2_scale_pan_min)
+                pancube_data[pancube_data == fill_value] = np.nan
+
+                # --- read lat/lon ---
+                lat = f[
+                    f"HDFEOS/SWATHS/{product_type}_PCO/Geolocation Fields/Latitude"
+                ][()]
+                lon = f[
+                    f"HDFEOS/SWATHS/{product_type}_PCO/Geolocation Fields/Longitude"
+                ][()]
+
+                wavelengths = "Panchromatic"
+                return pancube_data, wavelengths, lat, lon
+
+            else:
+                # --- HYPERSPECTRAL VNIR+SWIR ---
+                cube_path = f"HDFEOS/SWATHS/{product_type}_HCO/Data Fields"
+                vnir_cube = f[f"{cube_path}/VNIR_Cube"][()]
+                swir_cube = f[f"{cube_path}/SWIR_Cube"][()]
+                vnir_wavelengths = f.attrs["List_Cw_Vnir"][()]
+                swir_wavelengths = f.attrs["List_Cw_Swir"][()]
+
+                max_data_value = 65535
+                fill_value = -9999
+
+                l2_scale_vnir_min = f.attrs["L2ScaleVnirMin"][()]
+                l2_scale_vnir_max = f.attrs["L2ScaleVnirMax"][()]
+                vnir_cube = l2_scale_vnir_min + (
+                    vnir_cube.astype(np.float32) / max_data_value
+                ) * (l2_scale_vnir_max - l2_scale_vnir_min)
+
+                l2_scale_swir_min = f.attrs["L2ScaleSwirMin"][()]
+                l2_scale_swir_max = f.attrs["L2ScaleSwirMax"][()]
+                swir_cube = l2_scale_swir_min + (
+                    swir_cube.astype(np.float32) / max_data_value
+                ) * (l2_scale_swir_max - l2_scale_swir_min)
+
+                vnir_cube[vnir_cube == fill_value] = np.nan
+                swir_cube[swir_cube == fill_value] = np.nan
+
+                # --- combine cubes ---
+                full_cube = np.concatenate((vnir_cube, swir_cube), axis=1)
+                full_wavelengths = np.concatenate((vnir_wavelengths, swir_wavelengths))
+
+                # --- filter and sort wavelengths ---
+                valid_idx = full_wavelengths > 0
+                full_wavelengths = full_wavelengths[valid_idx]
+                full_cube = full_cube[:, valid_idx, :]
+                sort_idx = np.argsort(full_wavelengths)
+                full_wavelengths = full_wavelengths[sort_idx]
+                full_cube = full_cube[:, sort_idx, :]
+
+                # --- select requested wavelengths ---
+                if wavelengths is not None:
+                    requested = np.array(wavelengths)
+                    if method == "exact":
+                        idx = np.where(np.isin(full_wavelengths, requested))[0]
+                        if len(idx) == 0:
+                            raise ValueError(
+                                "No requested wavelengths found (exact match)."
+                            )
+                    else:
+                        idx = np.array(
+                            [np.abs(full_wavelengths - w).argmin() for w in requested]
+                        )
+                    full_wavelengths = full_wavelengths[idx]
+                    full_cube = full_cube[:, idx, :]
+
+                full_cube = full_cube.transpose(0, 2, 1)
+                # --- read lat/lon ---
+                lat = f[
+                    f"HDFEOS/SWATHS/{product_type}_HCO/Geolocation Fields/Latitude"
+                ][()]
+                lon = f[
+                    f"HDFEOS/SWATHS/{product_type}_HCO/Geolocation Fields/Longitude"
+                ][()]
+
+                return full_cube, full_wavelengths, lat, lon
+
+    except Exception as e:
+        raise RuntimeError(f"Error reading the file {file_path}: {e}")
+
+
+def write_prismaL2BC(
+    filepath: str,
+    output: str,
+    product_type: str = "PRS_L2B",  # "PRS_L2B" or "PRS_L2C"
+    panchromatic: bool = False,
+    wavelengths: Optional[np.ndarray] = None,
+    method: str = "nearest",
+    **kwargs: Any,
+) -> Optional[str]:
+    """
+    Convert a PRISMA Level-2B/2C dataset (.he5) into a georeferenced raster image.
+
+    This function loads PRISMA hyperspectral (VNIR+SWIR) or panchromatic data,
+    applies scaling and georeferencing using latitude/longitude fields, and writes
+    the result to a raster file (e.g., GeoTIFF).
+
+    Args:
+        filepath (str):
+            Path to the input PRISMA L2B/L2C `.he5` file.
+        output (str):
+            Path where the output raster will be saved.
+        product_type (str, optional):
+            PRISMA product type, either `"PRS_L2B"` or `"PRS_L2C"`.
+            Defaults to `"PRS_L2B"`.
+        panchromatic (bool, optional):
+            If True, treat the dataset as a single-band panchromatic cube.
+            If False, read the hyperspectral VNIR+SWIR cubes.
+            Defaults to False.
+        wavelengths (Optional[np.ndarray], optional):
+            List/array of wavelengths (in nm) to select (hyperspectral only).
+            If None, all available wavelengths are included.
+            Defaults to None.
+        method (str, optional):
+            Method for wavelength selection:
+                - `"nearest"`: select the closest available band for each requested wavelength.
+                - `"exact"`: select only exact matches.
+            Defaults to `"nearest"`.
+        **kwargs (Any):
+            Additional keyword arguments passed to:
+                - `array_to_image()` for raster writing
+                - `rasterio.open()` for file creation
+
+
+    Returns:
+        str: Output file path, or None if all values are NaN.
+    """
+    from affine import Affine
+
+    # load dataset if it's a path to .he5
+    if isinstance(filepath, str):
+        if wavelengths is not None:
+            full_cube, full_wavelengths, lat, lon = read_prismaL2BC(
+                filepath,
+                product_type=product_type,
+                wavelengths=wavelengths,
+                method=method,
+                panchromatic=panchromatic,
+            )
+        else:
+            full_cube, full_wavelengths, lat, lon = read_prismaL2BC(
+                filepath,
+                product_type=product_type,
+                method=method,
+                panchromatic=panchromatic,
+            )
+
+    # get np.array
+    array = full_cube
+    if not np.any(np.isfinite(array)):
+        print("Warning: All reflectance values are NaN. Output image will be blank.")
+        return None
+
+    # get band names (wavelength) and, eventually, select specific bands
+    if panchromatic:  # panchromatic
+        kwargs["band_description"] = full_wavelengths
+    else:  # cube
+        kwargs["wavelengths"] = full_wavelengths
+
+    # define transform
+    res_y = 30 / 111320
+    res_x = 30 / (111320 * np.cos(np.deg2rad(lat.mean())))
+
+    x_min, x_max = lon.min() - res_x / 2, lon.max() + res_x / 2
+    y_min, y_max = lat.min() - res_y / 2, lat.max() + res_y / 2
+    extent = (x_min, y_min, x_max, y_max)
+
+    ext_width = extent[2] - extent[0]
+    ext_height = extent[3] - extent[1]
+    height, width = lat.shape
+
+    xResolution = ext_width / width
+    yResolution = ext_height / height
+
+    if np.allclose(lat[1:, 0] - lat[:-1, 0], lat[1, 0] - lat[0, 0]) and np.allclose(
+        lon[0, 1:] - lon[0, :-1], lon[0, 1] - lon[0, 0]
+    ):
+
+        transform = Affine(xResolution, 0, extent[0], 0, -yResolution, extent[3])
+    else:
+        x0, y0 = lon[0, 0], lat[0, 0]
+        x1, y1 = lon[0, 1], lat[0, 1]
+        x2, y2 = lon[1, 0], lat[1, 0]
+
+        dx_col = x1 - x0
+        dy_col = y1 - y0
+        dx_row = x2 - x0
+        dy_row = y2 - y0
+
+        transform = Affine(dx_col, dx_row, x0, dy_col, dy_row, y0)
+
+    # write output
+    return array_to_image(
+        array,
+        output=output,
+        transpose=False,
+        crs="EPSG:4326",
+        transform=transform,
+        **kwargs,
+    )
