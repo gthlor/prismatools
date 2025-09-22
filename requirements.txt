@@ -2,7 +2,6 @@ affine
 h5py
 ipyleaflet
 leafmap
-matplotlib # to be deleted once the map module is made
 numpy
 rioxarray
 xarray
