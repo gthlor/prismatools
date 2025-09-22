@@ -12,9 +12,13 @@
         <meta name="author" content="gthlor">
       
       
-        <link rel="canonical" href="https://gthlor.github.io/prismatools/examples/03_spatial/">
+        <link rel="canonical" href="https://gthlor.github.io/prismatools/examples/02_interactive_visualization/">
       
       
+        <link rel="prev" href="../01_reading_and_exporting/">
+      
+      
+        <link rel="next" href="../03_spatial_analysis/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +26,7 @@
     
     
       
-        <title>03 spatial - prismatools</title>
+        <title>02 interactive visualization - prismatools</title>
       
     
     
@@ -78,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#index-computation" class="md-skip">
+        <a href="#visualizing-prisma-l2d-data-interactively-with-prismatools" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              03 spatial
+              02 interactive visualization
             
           </span>
         </div>
@@ -416,18 +420,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -443,7 +449,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -457,12 +463,12 @@
   
   
     <li class="md-nav__item">
-      <a href="../01_reading_and_exporting_PRISMA_cube/" class="md-nav__link">
+      <a href="../01_reading_and_exporting/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    01 reading and exporting PRISMA cube
+    01 reading and exporting
     
   </span>
   
@@ -477,15 +483,48 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../02_visualize_prisma/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    02 visualize prisma
+    02 interactive visualization
+    
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_spatial_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    03 spatial analysis
     
   </span>
   
@@ -680,32 +719,8 @@
   
   
   
+    
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#index-computation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Index computation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pca" class="md-nav__link">
-    <span class="md-ellipsis">
-      PCA
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -718,7 +733,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/prismatools/examples/03_spatial/03_spatial.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/prismatools/examples/02_interactive_visualization/02_interactive_visualization.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg>
     </a>
 
@@ -730,8 +745,6 @@
   
   
 
-
-  <h1>03 spatial</h1>
 
 <script>
 (function (global, factory) {
@@ -1197,8 +1210,28 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="https://colab.research.google.com/github/gthlor/prismatools/blob/main/docs/examples/02_visualize_prisma.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<h1 id="visualizing-prisma-l2d-data-interactively-with-prismatools">Visualizing PRISMA L2D data interactively with <strong>prismatools</strong><a class="anchor-link" href="#visualizing-prisma-l2d-data-interactively-with-prismatools">¶</a></h1><p>This notebook demonstrates how to visualize <a href="https://www.asi.it/en/earth-science/prisma/">PRISMA</a> hyperspectral L2D data interactively with <strong>prismatools</strong>. For more information about PRISMA, please visit the links below:</p>
+<ul>
+<li><a href="https://www.asi.it/en/earth-science/prisma/">https://www.asi.it/en/earth-science/prisma/</a></li>
+<li><a href="https://en.wikipedia.org/wiki/PRISMA_(spacecraft)">https://en.wikipedia.org/wiki/PRISMA_(spacecraft)</a></li>
+</ul>
+<p>Note:</p>
+<ul>
+<li><strong>Register and obtain the PRISMA datasets from the <a href="https://prisma.asi.it/">ASI PRISMA portal</a></strong></li>
+<li>Once you have downloaded a dataset, replace the filepath which we will use in this notebook.</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -1216,24 +1249,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">prismatools</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_prismaL2D</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">prismatools.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">band_math</span><span class="p">,</span> <span class="n">pca_image</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># %pip install prismatools</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1">from prismatools import read_prismaL2D
-from prismatools.spatial import band_math, pca_image</div>
+<div class="clipboard-copy-txt" id="cell-1"># %pip install prismatools</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h5 id="index-computation">Index computation<a class="anchor-link" href="#index-computation">¶</a></h5>
 </div>
 </div>
 </div>
@@ -1256,13 +1276,9 @@ from prismatools.spatial import band_math, pca_image</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># filep = r"..\..\data\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"</span>
-<span class="c1"># ds = read_prismaL2D(file_path=filep)</span>
-<span class="c1"># print(ds)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">prismatools</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2"># filep = r"..\..\data\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"
-# ds = read_prismaL2D(file_path=filep)
-# print(ds)</div>
+<div class="clipboard-copy-txt" id="cell-2">import prismatools</div>
 </div>
 </div>
 </div>
@@ -1287,44 +1303,27 @@ from prismatools.spatial import band_math, pca_image</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># wavelength_dict = {'red': 660, 'green': 560, 'blue': 480, 'nir': 840}</span>
-
-<span class="c1"># expressions = {</span>
-<span class="c1">#      'NDVI' : '(nir - red) / (nir + red)',</span>
-<span class="c1">#      'GNDVI': '(nir - green) / (nir + green)',</span>
-<span class="c1">#      'EVI'  : '2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)', # constant might be provided directly in the expression</span>
-<span class="c1">#      'SAVI' : '((nir - red) * (1 + L)) / (nir + red + L)'</span>
-<span class="c1">#  }</span>
-<span class="c1"># # or in dictionary</span>
-<span class="c1"># constants = {</span>
-<span class="c1">#     'L': 0.5,</span>
-<span class="c1">#     }</span>
-
-<span class="c1"># result = band_math(ds, expressions, wavelength_dict, constants, inplace=True)</span>
-<span class="c1"># print(result)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="s2">"/path/to/prisma.he5"</span>  <span class="c1"># example: r"..\..\data\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3"># wavelength_dict = {'red': 660, 'green': 560, 'blue': 480, 'nir': 840}
-
-# expressions = {
-#      'NDVI' : '(nir - red) / (nir + red)',
-#      'GNDVI': '(nir - green) / (nir + green)',
-#      'EVI'  : '2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)', # constant might be provided directly in the expression
-#      'SAVI' : '((nir - red) * (1 + L)) / (nir + red + L)'
-#  }
-# # or in dictionary
-# constants = {
-#     'L': 0.5,
-#     }
-
-# result = band_math(ds, expressions, wavelength_dict, constants, inplace=True)
-# print(result)</div>
+<div class="clipboard-copy-txt" id="cell-3">file = "/path/to/prisma.he5"  # example: r"..\..\data\PRS_L2D_STD_20240429095823_20240429095827_0001.he5"</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Read the PRISMA data as an <code>xarray.Dataset</code> object.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -1342,41 +1341,29 @@ from prismatools.spatial import band_math, pca_image</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># # plotting</span>
-<span class="c1"># result["SAVI"].plot(cmap='YlGn', vmin=0, vmax=1)</span>
-
-<span class="c1"># # exporting</span>
-<span class="c1"># indices = [v for v in result.data_vars if v != 'reflectance']</span>
-<span class="c1"># for index in indices:</span>
-<span class="c1">#     output_path = fr"C:\Users\loren\Desktop\prismatools\out_test\{index}.tif"</span>
-<span class="c1">#     result[index].rio.to_raster(output_path)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># ds = prismatools.read_prismaL2D(file_path=file)</span>
+<span class="c1"># ds</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4"># # plotting
-# result["SAVI"].plot(cmap='YlGn', vmin=0, vmax=1)
-
-# # exporting
-# indices = [v for v in result.data_vars if v != 'reflectance']
-# for index in indices:
-#     output_path = fr"C:\Users\loren\Desktop\prismatools\out_test\{index}.tif"
-#     result[index].rio.to_raster(output_path)</div>
+<div class="clipboard-copy-txt" id="cell-4"># ds = prismatools.read_prismaL2D(file_path=file)
+# ds</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h5 id="pca">PCA<a class="anchor-link" href="#pca">¶</a></h5>
+<p>Create an interactive map.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -1394,30 +1381,29 @@ from prismatools.spatial import band_math, pca_image</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># # da tiff</span>
-<span class="c1"># input = r"C:\Users\loren\Desktop\prismatools\out_test\imgTest.tif"</span>
-<span class="c1"># out = r"C:\Users\loren\Desktop\prismatools\out_test\img_pca_daTIFF.tif"</span>
-<span class="c1"># n_components = 10</span>
-
-<span class="c1"># ds_pca, expl_var = pca_image(input, out, n_components=n_components)</span>
-<span class="c1"># print(ds_pca)</span>
-<span class="c1"># print(expl_var)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># m = prismatools.Map()</span>
+<span class="c1"># m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5"># # da tiff
-# input = r"C:\Users\loren\Desktop\prismatools\out_test\imgTest.tif"
-# out = r"C:\Users\loren\Desktop\prismatools\out_test\img_pca_daTIFF.tif"
-# n_components = 10
-
-# ds_pca, expl_var = pca_image(input, out, n_components=n_components)
-# print(ds_pca)
-# print(expl_var)</div>
+<div class="clipboard-copy-txt" id="cell-5"># m = prismatools.Map()
+# m</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Add the PRISMA data to the map.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -1435,9 +1421,42 @@ from prismatools.spatial import band_math, pca_image</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># ds_pca["pca"].sel(pc=2).plot(x="x", y="y")</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># m.add_prisma(ds, wavelengths=[650.0, 550.0, 450.0], vmin=0, vmax=0.2)</span>
+<span class="c1"># m.add("spectral")</span>
+<span class="c1"># m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6"># ds_pca["pca"].sel(pc=2).plot(x="x", y="y")</div>
+<div class="clipboard-copy-txt" id="cell-6"># m.add_prisma(ds, wavelengths=[650.0, 550.0, 450.0], vmin=0, vmax=0.2)
+# m.add("spectral")
+# m</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy ,="" aria-label="Copy to Clipboard" for="cell-7">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># m.add_prisma(ds, wavelengths=[650.0, 550.0, 450.0], vmin=0, vmax=0.2)</span>
+<span class="c1"># m.add('spectral')</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-7"># m.add_prisma(ds, wavelengths=[650.0, 550.0, 450.0], vmin=0, vmax=0.2)
+# m.add('spectral')</div>
 </div>
 </div>
 </div>
@@ -1447,7 +1466,7 @@ from prismatools.spatial import band_math, pca_image</div>
 </div> <!-- jp-Notebook -->
 </div> <!-- jupyter-wrapper -->
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"bf40b7f7fd20457ea816949fb62a77c0": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets\/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets\/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets\/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "f3d202931f9d4a48a7590da034234534": {"model_name": "ForceLoadModel", "model_module": "jupyter-vue", "model_module_version": "^1.11.3", "state": {"_dom_classes": [], "_model_module": "jupyter-vue", "_model_module_version": "^1.11.3", "_model_name": "ForceLoadModel", "_view_count": null, "_view_module": null, "_view_module_version": "", "_view_name": null, "layout": "IPY_MODEL_bf40b7f7fd20457ea816949fb62a77c0", "tabbable": null, "tooltip": null}}, "ba107d102f1446599c047c605d9313d4": {"model_name": "ThemeModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeModel", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "dark": null, "dark_effective": null}}, "43d4f3e16bf544f3a54c7940446e7ee9": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeColorsModel", "_theme_name": "light", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "accent": "#82B1FF", "anchor": null, "error": "#FF5252", "info": "#2196F3", "primary": "#1976D2", "secondary": "#424242", "success": "#4CAF50", "warning": "#FB8C00"}}, "3f9a75b01cbc41eb984b62408787bc17": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeColorsModel", "_theme_name": "dark", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "accent": "#FF4081", "anchor": null, "error": "#FF5252", "info": "#2196F3", "primary": "#2196F3", "secondary": "#424242", "success": "#4CAF50", "warning": "#FB8C00"}}, "a3f6e3b7ddeb4962b9cedeeddbb6108c": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets\/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets\/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets\/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": "500px"}}}, "version_major": 2, "version_minor": 0}
+{"state": {"0b2b5f27454c41b5a1b410ff9c4b76c8": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets\/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets\/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets\/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": null}}, "07f02bea757e4d97bc987bd71e68f1c3": {"model_name": "ForceLoadModel", "model_module": "jupyter-vue", "model_module_version": "^1.11.3", "state": {"_dom_classes": [], "_model_module": "jupyter-vue", "_model_module_version": "^1.11.3", "_model_name": "ForceLoadModel", "_view_count": null, "_view_module": null, "_view_module_version": "", "_view_name": null, "layout": "IPY_MODEL_0b2b5f27454c41b5a1b410ff9c4b76c8", "tabbable": null, "tooltip": null}}, "be6152f3713f4025a0f65b98916e5758": {"model_name": "ThemeModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeModel", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "dark": null, "dark_effective": null}}, "f0c15acb1ef345b7869a11b351290edb": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeColorsModel", "_theme_name": "light", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "accent": "#82B1FF", "anchor": null, "error": "#FF5252", "info": "#2196F3", "primary": "#1976D2", "secondary": "#424242", "success": "#4CAF50", "warning": "#FB8C00"}}, "19186b2112ba4a758770c56b834f3e33": {"model_name": "ThemeColorsModel", "model_module": "jupyter-vuetify", "model_module_version": "^1.11.3", "state": {"_model_module": "jupyter-vuetify", "_model_module_version": "^1.11.3", "_model_name": "ThemeColorsModel", "_theme_name": "dark", "_view_count": null, "_view_module": null, "_view_module_version": "^1.11.3", "_view_name": null, "accent": "#FF4081", "anchor": null, "error": "#FF5252", "info": "#2196F3", "primary": "#2196F3", "secondary": "#424242", "success": "#4CAF50", "warning": "#FB8C00"}}, "05d9a46b61e44ec9a8460a11a8478ae9": {"model_name": "LayoutModel", "model_module": "@jupyter-widgets\/base", "model_module_version": "2.0.0", "state": {"_model_module": "@jupyter-widgets\/base", "_model_module_version": "2.0.0", "_model_name": "LayoutModel", "_view_count": null, "_view_module": "@jupyter-widgets\/base", "_view_module_version": "2.0.0", "_view_name": "LayoutView", "align_content": null, "align_items": null, "align_self": null, "border_bottom": null, "border_left": null, "border_right": null, "border_top": null, "bottom": null, "display": null, "flex": null, "flex_flow": null, "grid_area": null, "grid_auto_columns": null, "grid_auto_flow": null, "grid_auto_rows": null, "grid_column": null, "grid_gap": null, "grid_row": null, "grid_template_areas": null, "grid_template_columns": null, "grid_template_rows": null, "height": null, "justify_content": null, "justify_items": null, "left": null, "margin": null, "max_height": null, "max_width": null, "min_height": null, "min_width": null, "object_fit": null, "object_position": null, "order": null, "overflow": null, "padding": null, "right": null, "top": null, "visibility": null, "width": "500px"}}}, "version_major": 2, "version_minor": 0}
 </script>
 
         <style>
@@ -1476,7 +1495,7 @@ from prismatools.spatial import band_math, pca_image</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 18, 2025 12:17:43 UTC"><span class="timeago" datetime="2025-09-18T12:17:43+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 18, 2025 12:17:43 UTC">2025-09-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 22, 2025 12:39:33 UTC"><span class="timeago" datetime="2025-09-22T12:39:33+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 22, 2025 12:39:33 UTC">2025-09-22</span>
   </span>
 
     
@@ -1486,7 +1505,7 @@ from prismatools.spatial import band_math, pca_image</div>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 18, 2025 12:11:52 UTC"><span class="timeago" datetime="2025-09-18T12:11:52+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 18, 2025 12:11:52 UTC">2025-09-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 16, 2025 16:34:12 UTC"><span class="timeago" datetime="2025-09-16T16:34:12+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 16, 2025 16:34:12 UTC">2025-09-16</span>
   </span>
 
     
