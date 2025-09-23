@@ -14,13 +14,13 @@ If you don't have [pip](https://pip.pypa.io) installed, this [Python installatio
 
 ## Install from conda-forge
 
-**prismatools** is also available on [conda-forge](https://anaconda.org/conda-forge/hypercoast). If you have [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install **prismatools** using the following command:
+**prismatools** is also available on [conda-forge](https://anaconda.org/conda-forge/prismatools). If you have [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install **prismatools** using the following command:
 
 ```bash
 conda install -c conda-forge prismatools
 ```
 
-Alternatively, you can create a new conda environment and install hypercoast in the new environment. This is a good practice because it avoids potential conflicts with other packages installed in your base environment.
+Alternatively, you can create a new conda environment and install prismatools in the new environment. This is a good practice because it avoids potential conflicts with other packages installed in your base environment.
 
 ```bash
 conda install -n base mamba -c conda-forge
