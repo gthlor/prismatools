@@ -15,7 +15,7 @@
 
 -   Documentation: <https://gthlor.github.io/prismatools>
 -   PyPI: <https://pypi.org/project/prismatools/>
--   Conda-forge: https://anaconda.org/conda-forge/prismatools
+-   Conda-forge: <https://anaconda.org/conda-forge/prismatools>
 -   Free software: [MIT License](https://opensource.org/licenses/MIT)
 
 ## Introduction
