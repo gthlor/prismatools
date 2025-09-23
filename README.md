@@ -2,9 +2,9 @@
 
 
 [![image](https://img.shields.io/pypi/v/prismatools.svg)](https://pypi.python.org/pypi/prismatools)
-[![image](https://static.pepy.tech/badge/prismatools)](https://pepy.tech/project/prismatools)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/prismatools?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=BLUE&left_text=downloads+%28PyPI%29)](https://pepy.tech/projects/prismatools)
 [![image](https://img.shields.io/conda/vn/conda-forge/prismatools.svg)](https://anaconda.org/conda-forge/prismatools)
-[![Conda Downloads](https://anaconda.org/conda-forge/prismatools/badges/downloads.svg)](https://anaconda.org/conda-forge/prismatools)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/prismatools?label=downloads%20(conda)&color=green)](https://anaconda.org/conda-forge/prismatools)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![image](https://anaconda.org/conda-forge/prismatools/badges/latest_release_date.svg)
 
