@@ -5,7 +5,7 @@
 [![Conda](https://img.shields.io/conda/vn/conda-forge/prismatools.svg?color=green)](https://anaconda.org/conda-forge/prismatools)
 [![Platform](https://img.shields.io/conda/pn/conda-forge/prismatools.svg?color=yellowgreen)](https://anaconda.org/conda-forge/prismatools)
 ![Python](https://img.shields.io/badge/language-python-brightgreen)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
 [![PyPI Downloads](https://static.pepy.tech/personalized-badge/prismatools?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=red&left_text=downloads+%28pypi%29)](https://pepy.tech/projects/prismatools)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/prismatools?label=downloads%20(conda)&color=green)](https://anaconda.org/conda-forge/prismatools)
 ![Status](https://img.shields.io/badge/status-active-magenta)
@@ -40,6 +40,6 @@ With **prismatools**, researchers can explore PRISMA imagery interactively, extr
 
 ## Citations
 
-If you find **prismatools** useful in your research, please consider citing the following paper:
-[*DOI will be provided upon publication*].
+If you find **prismatools** useful in your research, please consider citing the following paper: 
+[*DOI will be provided upon publication*].   
 Thank you!

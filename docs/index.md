@@ -41,5 +41,5 @@ With **prismatools**, researchers can explore PRISMA imagery interactively, extr
 ## Citations
 
 If you find **prismatools** useful in your research, please consider citing the following paper:
-[*DOI will be provided upon publication*].
+[*DOI will be provided upon publication*].  
 Thank you!
