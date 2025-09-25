@@ -2,6 +2,6 @@
 
 __author__ = """Lorenzo Crecco"""
 __email__ = "lorenzo.crecco@hotmail.com"
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from .prismatools import *
