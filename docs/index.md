@@ -1,17 +1,20 @@
 # Welcome to prismatools
 
 
-[![image](https://img.shields.io/pypi/v/prismatools.svg)](https://pypi.python.org/pypi/prismatools)
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/prismatools?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=BLUE&left_text=downloads+%28PyPI%29)](https://pepy.tech/projects/prismatools)
-[![image](https://img.shields.io/conda/vn/conda-forge/prismatools.svg)](https://anaconda.org/conda-forge/prismatools)
+[![PyPI](https://img.shields.io/pypi/v/prismatools.svg?color=red)](https://pypi.python.org/pypi/prismatools)
+[![Conda](https://img.shields.io/conda/vn/conda-forge/prismatools.svg?color=green)](https://anaconda.org/conda-forge/prismatools)
+[![Platform](https://img.shields.io/conda/pn/conda-forge/prismatools.svg?color=yellowgreen)](https://anaconda.org/conda-forge/prismatools)
+![Python](https://img.shields.io/badge/language-python-brightgreen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/prismatools?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=red&left_text=downloads+%28pypi%29)](https://pepy.tech/projects/prismatools)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/prismatools?label=downloads%20(conda)&color=green)](https://anaconda.org/conda-forge/prismatools)
-[![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![image](https://anaconda.org/conda-forge/prismatools/badges/latest_release_date.svg)
+![Status](https://img.shields.io/badge/status-active-magenta)
+![Release Date](https://anaconda.org/conda-forge/prismatools/badges/latest_release_date.svg)
 
 [![logo](https://raw.githubusercontent.com/gthlor/prismatools/main/docs/assets/logo150_nobg.png)](https://github.com/gthlor/prismatools/blob/main/docs/assets/logo150_nobg.png)
 
 
-**prismatools** is an open-source Python package for reading, analyzing, and visualizing hyperspectral imagery from the PRISMA mission.
+**prismatools** is an open-source Python package for reading, visualizing, and analyzing hyperspectral imagery from the PRISMA mission.
 
 -   Documentation: <https://gthlor.github.io/prismatools>
 -   PyPI: <https://pypi.org/project/prismatools/>
@@ -37,4 +40,6 @@ With **prismatools**, researchers can explore PRISMA imagery interactively, extr
 
 ## Citations
 
-If you find **prismatools** useful in your research, please consider citing the following paper: [*DOI will be provided upon publication*]. Thank you!
+If you find **prismatools** useful in your research, please consider citing the following paper:
+[*DOI will be provided upon publication*].
+Thank you!

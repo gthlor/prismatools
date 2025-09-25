@@ -24,7 +24,7 @@ Alternatively, you can create a new conda environment and install prismatools in
 
 ```bash
 conda install -n base mamba -c conda-forge
-conda create -n prisma python=3.11
+conda create -n prisma python=3.10
 conda activate prisma
 mamba install -c conda-forge prismatools
 ```
