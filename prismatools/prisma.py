@@ -217,6 +217,8 @@ def read_prismaL2D(
                         # apply same wavelength filtering and sorting as reflectance
                         err_full = err_full[:, valid_idx, :]
                         err_full = err_full[:, sort_idx, :]
+                        if wavelengths is not None:
+                            err_full = err_full[:, idx, :]
                         ds["error_matrix"] = ("y", "wavelength", "x"), err_full
                     except Exception:
                         pass
