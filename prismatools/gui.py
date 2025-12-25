@@ -424,6 +424,10 @@ class spectralWidget(widgets.HBox):
             ylim (tuple, optional): The y-axis limits. Defaults to None.
         """
         self._host_map = host_map
+
+        if not hasattr(self._host_map, "_spectral_counter"):
+            self._host_map._spectral_counter = 0
+
         self.on_close = None
         self._stack = stack
         self._show_plot = False
@@ -471,6 +475,9 @@ class spectralWidget(widgets.HBox):
 
             if hasattr(self._host_map, "_spectral_data"):
                 self._host_map._spectral_data = {}
+            
+            if hasattr(self._host_map, "_spectral_counter"):
+                self._host_map._spectral_counter = 0
 
             self._output_widget.clear_output()
             self._show_plot = False
@@ -541,13 +548,21 @@ class spectralWidget(widgets.HBox):
             lat = latlon[0]
             lon = latlon[1]
             if kwargs.get("type") == "click" and self._host_map._layer_editor is None:
+                
+                self._host_map._spectral_counter += 1
+                idx = self._host_map._spectral_counter
+                label_txt = f"P {idx}"
+
                 layer_name = layers_widget.value
 
                 if not hasattr(self._host_map, "_plot_markers"):
                     self._host_map._plot_markers = []
+
                 markers = self._host_map._plot_markers
                 marker_cluster = self._host_map._plot_marker_cluster
-                markers.append(ipyleaflet.Marker(location=latlon, draggable=False))
+                marker = ipyleaflet.Marker(location=latlon, draggable=False)
+                marker.popup = widgets.HTML(value=label_txt)
+                markers.append(marker)
                 marker_cluster.markers = markers
                 self._host_map._plot_marker_cluster = marker_cluster
 
@@ -593,12 +608,16 @@ class spectralWidget(widgets.HBox):
                         xlabel = "Band"
                         x_values = da.coords[da.dims[0]].values
 
-                    plt.plot(
+                    line = plt.plot(
                         x_values,
                         da.values,
                         color=color,
                         axes_options=axes_options,
                     )
+                    line.labels = [label_txt]
+
+                    plt.legend()
+
                     try:
                         if isinstance(self._fig.axes[0], bqplot.ColorAxis):
                             self._fig.axes = self._fig.axes[1:]
@@ -657,6 +676,9 @@ class spectralWidget(widgets.HBox):
 
             if hasattr(self._host_map, "_spectral_data"):
                 self._host_map._spectral_data = {}
+            
+            if hasattr(self._host_map, "_spectral_counter"):
+                self._host_map._spectral_counter = 0
 
             if hasattr(self, "_output_widget") and self._output_widget is not None:
                 self._output_widget.clear_output()

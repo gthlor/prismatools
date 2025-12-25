@@ -1,7 +1,13 @@
 affine
 h5py
 ipyleaflet
+ipywidgets
+ipyevents
+ipyfilechooser
 leafmap
 numpy
 rioxarray
 xarray
+scikit-learn
+bqplot
+localtileserver
