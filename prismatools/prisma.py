@@ -18,12 +18,14 @@ def read_prismaL2D(
     wavelengths: Optional[List[float]] = None,
     method: str = "nearest",
     panchromatic: bool = False,
+    extract_error: bool = False,
 ) -> xr.Dataset:
     """
     The function reads PRISMA Level-2D .he5 data (hyperspectral or panchromatic),
     applies digital number to reflectance scaling, handles fill values, optionally
     selects specific wavelengths, and builds an xarray.Dataset with spatial
-    coordinates and CRS information.
+    coordinates and CRS information. Optionally reads pixel-level error matrices
+    when available.
 
     Args:
         file_path (str):
@@ -40,12 +42,19 @@ def read_prismaL2D(
         panchromatic (bool, optional):
             If True, read the panchromatic cube instead of the hyperspectral VNIR+SWIR cubes.
             Defaults to False.
+        extract_error (bool, optional):
+            If True, attempt to read and attach pixel-level error matrix
+            fields from the product (when present). Defaults to False.
 
     Returns:
         xr.Dataset:
         An xarray.Dataset containing reflectance data with dimensions:
             - Hyperspectral: ("y", "x", "wavelength")
             - Panchromatic: ("y", "x")
+
+        The dataset may include an optional variable named `error_matrix` when
+        `extract_error=True` and pixel-level error matrices are present in the
+        product. The shape of `error_matrix` matches the reflectance dims.
     """
     # check if file is valid
     if not check_valid_file(file_path, type="PRS_L2D"):
@@ -63,7 +72,7 @@ def read_prismaL2D(
                 pancube_data = f[pancube_path][()]
                 l2_scale_pan_min = f.attrs["L2ScalePanMin"][()]
                 l2_scale_pan_max = f.attrs["L2ScalePanMax"][()]
-                fill_value = -9999
+                fill_value = 0
                 max_data_value = 65535
 
                 pancube_data = l2_scale_pan_min + (
@@ -94,6 +103,21 @@ def read_prismaL2D(
                         x=(["x"], x_coords, dict(units="m")),
                     ),
                 )
+                if extract_error:
+                    try:
+                        err_path = (
+                            "HDFEOS/SWATHS/PRS_L2D_PCO/Data Fields/PIXEL_L2_ERR_MATRIX"
+                        )
+                        err_arr = f[err_path][()].astype(np.float32)
+                        # mask error where DN fill is present
+                        try:
+                            err_arr[np.isnan(pancube_data)] = np.nan
+                        except Exception:
+                            pass
+                        ds["error_matrix"] = ("y", "x"), err_arr
+                    except Exception:
+                        # no error matrix available; continue silently
+                        pass
 
             else:
                 # --- HYPERSPECTRAL CUBE ---
@@ -105,7 +129,7 @@ def read_prismaL2D(
                 l2_scale_vnir_max = f.attrs["L2ScaleVnirMax"][()]
                 l2_scale_swir_min = f.attrs["L2ScaleSwirMin"][()]
                 l2_scale_swir_max = f.attrs["L2ScaleSwirMax"][()]
-                fill_value = -9999
+                fill_value = 0
                 max_data_value = 65535
 
                 vnir_cube = l2_scale_vnir_min + (
@@ -173,7 +197,38 @@ def read_prismaL2D(
                         x=(["x"], x_coords, dict(units="m")),
                     ),
                 )
+                if extract_error:
+                    try:
+                        v_err_path = "HDFEOS/SWATHS/PRS_L2D_HCO/Data Fields/VNIR_PIXEL_L2_ERR_MATRIX"
+                        s_err_path = "HDFEOS/SWATHS/PRS_L2D_HCO/Data Fields/SWIR_PIXEL_L2_ERR_MATRIX"
+                        v_err = f[v_err_path][()].astype(np.float32)
+                        s_err = f[s_err_path][()].astype(np.float32)
+                        # mask raw DN fill values if raw arrays exist
+                        try:
+                            v_err[np.isnan(vnir_cube)] = np.nan
+                        except Exception:
+                            pass
+                        try:
+                            s_err[np.isnan(swir_cube)] = np.nan
+                        except Exception:
+                            pass
+
+                        err_full = np.concatenate((v_err, s_err), axis=1)
+                        # apply same wavelength filtering and sorting as reflectance
+                        err_full = err_full[:, valid_idx, :]
+                        err_full = err_full[:, sort_idx, :]
+                        ds["error_matrix"] = ("y", "wavelength", "x"), err_full
+                    except Exception:
+                        pass
                 ds["reflectance"] = ds.reflectance.transpose("y", "x", "wavelength")
+                # transpose error matrix as well to match reflectance dims
+                try:
+                    if "error_matrix" in ds:
+                        ds["error_matrix"] = ds.error_matrix.transpose(
+                            "y", "x", "wavelength"
+                        )
+                except Exception:
+                    pass
 
     except Exception as e:
         raise RuntimeError(f"Error reading the file {file_path}: {e}")
@@ -187,7 +242,7 @@ def read_prismaL2D(
     ds.attrs.update(
         dict(
             units="unitless",
-            _FillValue=-9999,
+            _FillValue=0,
             grid_mapping="crs",
             standard_name="reflectance",
             Conventions="CF-1.6",
@@ -492,7 +547,7 @@ def read_prismaL2BC(
                 cube_path = f"HDFEOS/SWATHS/{product_type}_PCO/Data Fields/Cube"
                 pancube_data = f[cube_path][()]
 
-                fill_value = -9999
+                fill_value = 0
                 max_data_value = 65535
                 l2_scale_pan_min = f.attrs.get("L2ScalePanMin", 0.0)
                 l2_scale_pan_max = f.attrs.get("L2ScalePanMax", 1.0)
@@ -522,7 +577,7 @@ def read_prismaL2BC(
                 swir_wavelengths = f.attrs["List_Cw_Swir"][()]
 
                 max_data_value = 65535
-                fill_value = -9999
+                fill_value = 0
 
                 l2_scale_vnir_min = f.attrs["L2ScaleVnirMin"][()]
                 l2_scale_vnir_max = f.attrs["L2ScaleVnirMax"][()]
