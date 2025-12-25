@@ -1905,6 +1905,8 @@ product. The shape of <code>error_matrix</code> matches the reflectance dims.</p
                         <span class="c1"># apply same wavelength filtering and sorting as reflectance</span>
                         <span class="n">err_full</span> <span class="o">=</span> <span class="n">err_full</span><span class="p">[:,</span> <span class="n">valid_idx</span><span class="p">,</span> <span class="p">:]</span>
                         <span class="n">err_full</span> <span class="o">=</span> <span class="n">err_full</span><span class="p">[:,</span> <span class="n">sort_idx</span><span class="p">,</span> <span class="p">:]</span>
+                        <span class="k">if</span> <span class="n">wavelengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">err_full</span> <span class="o">=</span> <span class="n">err_full</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
                         <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;error_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;wavelength&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span> <span class="n">err_full</span>
                     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="k">pass</span>
