@@ -105,7 +105,9 @@ def read_prismaL2D(
                 )
                 if extract_error:
                     try:
-                        err_path = "HDFEOS/SWATHS/PRS_L2D_PCO/Data Fields/PIXEL_L2_ERR_MATRIX"
+                        err_path = (
+                            "HDFEOS/SWATHS/PRS_L2D_PCO/Data Fields/PIXEL_L2_ERR_MATRIX"
+                        )
                         err_arr = f[err_path][()].astype(np.float32)
                         # mask error where DN fill is present
                         try:
@@ -222,7 +224,9 @@ def read_prismaL2D(
                 # transpose error matrix as well to match reflectance dims
                 try:
                     if "error_matrix" in ds:
-                        ds["error_matrix"] = ds.error_matrix.transpose("y", "x", "wavelength")
+                        ds["error_matrix"] = ds.error_matrix.transpose(
+                            "y", "x", "wavelength"
+                        )
                 except Exception:
                     pass
 

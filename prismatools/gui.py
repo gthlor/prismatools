@@ -475,7 +475,7 @@ class spectralWidget(widgets.HBox):
 
             if hasattr(self._host_map, "_spectral_data"):
                 self._host_map._spectral_data = {}
-            
+
             if hasattr(self._host_map, "_spectral_counter"):
                 self._host_map._spectral_counter = 0
 
@@ -548,7 +548,7 @@ class spectralWidget(widgets.HBox):
             lat = latlon[0]
             lon = latlon[1]
             if kwargs.get("type") == "click" and self._host_map._layer_editor is None:
-                
+
                 self._host_map._spectral_counter += 1
                 idx = self._host_map._spectral_counter
                 label_txt = f"P {idx}"
@@ -676,7 +676,7 @@ class spectralWidget(widgets.HBox):
 
             if hasattr(self._host_map, "_spectral_data"):
                 self._host_map._spectral_data = {}
-            
+
             if hasattr(self._host_map, "_spectral_counter"):
                 self._host_map._spectral_counter = 0
 
