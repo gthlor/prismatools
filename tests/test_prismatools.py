@@ -2,7 +2,6 @@
 
 """Tests for `prismatools` package."""
 
-
 import unittest
 
 from prismatools import prismatools
